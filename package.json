@@ -1,0 +1,25 @@
+{
+  "name": "antiplagiat",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "hello_world": "node hello_world/server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/moevm/nosql2h23-antiplagiat.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/moevm/nosql2h23-antiplagiat/issues"
+  },
+  "homepage": "https://github.com/moevm/nosql2h23-antiplagiat#readme",
+  "dependencies": {
+    "body-parser": "^1.20.2",
+    "express": "^4.18.2",
+    "mongodb": "^6.1.0"
+  }
+}
