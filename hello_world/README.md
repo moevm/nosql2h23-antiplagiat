@@ -3,7 +3,7 @@
 Скрипт для проверки работы с базой данных. Для запуска нужно из корневой папки проекта вызвать:
 
 ```
-npm run hello_world
+docker-compose run --service-ports backend hello_world
 ./hello_world/request.sh [...]
 ```
 
