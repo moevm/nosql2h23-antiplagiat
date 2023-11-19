@@ -3,14 +3,15 @@ const MongoClient = require("mongodb").MongoClient;
 const ObjectId = require("mongodb").ObjectId;
 const app = express();
 const json_parser = express.json();
-const mongo_client = new MongoClient("mongodb://127.0.0.1:27017/");
+
+const mongo_client = new MongoClient("mongodb://" + process.env.ANTIPLAGIAT_DB_HOST);
 
 
 (async () => {
      try {
         await mongo_client.connect();
         app.locals.collection = mongo_client.db("test").collection("users")
-        app.listen(8088);
+        app.listen(process.env.ANTIPLAGIAT_PORT);
         console.log("Server has started");
     }
     catch(err) {

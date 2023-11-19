@@ -1,0 +1,23 @@
+version: "3"
+
+services:
+
+  backend:
+    build:
+      context: .
+      args:
+        ANTIPLAGIAT_PORT: 8088
+    depends_on:
+      - db
+    environment:
+      - ANTIPLAGIAT_DB_HOST=db:27017/
+      - ANTIPLAGIAT_PORT=8088
+    command: hello_world
+    ports:
+      - "8088:8088"
+
+  db:
+    image: "mongo:7.0.2"
+    restart: always
+    ports:
+      - 27077:27017
