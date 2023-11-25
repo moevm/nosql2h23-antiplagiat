@@ -2,7 +2,7 @@ FROM ubuntu:focal
 
 ARG ANTIPLAGIAT_PORT=8088
 
-WORKDIR /opt/antiplaigat_backend
+WORKDIR /opt/antiplagiat_backend
 COPY . .
 
 ENV TZ=Europe/Moscow
