@@ -1,4 +1,5 @@
 import { Router, json } from "express";
+import * as Db from "./db.js";
 
 const router = Router();
 const jsonParser = json();

@@ -12,7 +12,8 @@ services:
     environment:
       - ANTIPLAGIAT_DB_HOST=db:27017/
       - ANTIPLAGIAT_PORT=8088
-    command: hello_world
+      - ANTIPLAGIAT_DB_NAME=antiplagiat
+    command: backend
     ports:
       - "8088:8088"
 

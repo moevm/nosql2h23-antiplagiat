@@ -2,10 +2,12 @@
   "name": "antiplagiat",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "type": "module",
+  "main": "backend/main.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "hello_world": "node hello_world/server.js"
+    "hello_world": "node hello_world/server.js",
+    "backend": "node backend/main.js"
   },
   "repository": {
     "type": "git",
