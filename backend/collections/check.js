@@ -14,4 +14,4 @@ class CheckCollection
     }
 };
 
-export { CheckCollection }
+export { CheckCollection };

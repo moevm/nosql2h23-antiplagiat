@@ -14,4 +14,4 @@ class FileCollection
     }
 };
 
-export { FileCollection }
+export { FileCollection };

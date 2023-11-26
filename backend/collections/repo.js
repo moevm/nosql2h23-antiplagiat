@@ -14,4 +14,4 @@ class RepoCollection
     }
 };
 
-export { RepoCollection }
+export { RepoCollection };

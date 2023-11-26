@@ -10,7 +10,7 @@ const mongoСlient = new MongoClient( "mongodb://" + process.env.ANTIPLAGIAT_DB_
     }
     catch( err ) {
         return console.log( err );
-    } 
+    }
 } )();
 
 const database = mongoСlient.db( process.env.ANTIPLAGIAT_DB_NAME );

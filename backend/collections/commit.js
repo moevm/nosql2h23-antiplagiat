@@ -14,4 +14,4 @@ class CommitCollection
     }
 };
 
-export { CommitCollection }
+export { CommitCollection };
