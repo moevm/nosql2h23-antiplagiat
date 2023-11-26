@@ -8,7 +8,7 @@ const mongo_client = new MongoClient("mongodb://" + process.env.ANTIPLAGIAT_DB_H
 
 
 (async () => {
-     try {
+    try {
         await mongo_client.connect();
         app.locals.collection = mongo_client.db("test").collection("users")
         app.listen(process.env.ANTIPLAGIAT_PORT);
@@ -21,7 +21,6 @@ const mongo_client = new MongoClient("mongodb://" + process.env.ANTIPLAGIAT_DB_H
 
 
 app.get("/api/users", async(req, res) => {
-          
     const collection = req.app.locals.collection;
     try {
         const users = await collection.find({}).toArray();
@@ -35,7 +34,6 @@ app.get("/api/users", async(req, res) => {
 
 
 app.get("/api/users/:id", async(req, res) => {
-          
     const collection = req.app.locals.collection;
     try {
         const id = new ObjectId(req.params.id);
@@ -55,7 +53,6 @@ app.get("/api/users/:id", async(req, res) => {
 
 
 app.post("/api/users", json_parser, async(req, res) => {
-
     if (!req.body) {
         return res.sendStatus(400);
     }
@@ -78,7 +75,6 @@ app.post("/api/users", json_parser, async(req, res) => {
 
 
 app.delete("/api/users/:id", async(req, res) => {
-          
     const collection = req.app.locals.collection;
     try {
         const id = new ObjectId(req.params.id);
@@ -98,7 +94,6 @@ app.delete("/api/users/:id", async(req, res) => {
 
 
 app.put("/api/users", json_parser, async(req, res) => {
-
     if (!req.body) {
         return res.sendStatus(400);
     }
