@@ -10,7 +10,7 @@ function ProcessGitError( errorReason )
 async function FetchRepo( repo )
 {
     await repo.fetch( "origin" );
-    console.info( "Repo " + repository.path() + " has been fetched" );
+    console.info( "Repo " + repo.path() + " has been fetched" );
     return repo;
 }
 
@@ -18,11 +18,27 @@ async function FetchRepo( repo )
 async function GetBranches( repo )
 {
     const refNames = await repo.getReferenceNames( NodeGit.Reference.TYPE.ALL );
-    const branchNames = refNames.filter( ( name ) =>
-        name.startsWith( "/refs/heads/" )
-        || name.startsWith( "/refs/remotes/" )
+    const branches = refNames.filter( ( name ) =>
+        name.startsWith( "refs/heads/" )
+        || name.startsWith( "refs/remotes/" )
     );
     return { "repo": repo, "branches": branches };
+}
+
+
+async function FillRepoInfo( name, repo, branches,
+    repoCollection, commitCollection, fileCollection )
+{
+    for ( const branch of branches )
+    {
+        await repo.checkoutBranch( branch );
+        const commit = await repo.getHeadCommit();
+
+        // todo: считывание файлов с ветки, заполнение базы
+        // timeMs() returns unix timestamp
+        console.log("branch:", branch, "\ncommit:", commit.sha(),
+            "\nauthor:", commit.author().name(), "\ntime:", commit.timeMs());
+    }
 }
 
 
@@ -31,8 +47,9 @@ function ProcessRepo( name, repoPromise, repoCollection, commitCollection, fileC
     let result = true;
     repoPromise.then( FetchRepo )
         .then( GetBranches )
-        .then( ( args ) => {
-            FillRepoInfo( repoCollection, name, args.repo, args.branches );
+        .then( async ( args ) => {
+            await FillRepoInfo( name, args.repo, args.branches,
+                repoCollection, commitCollection, fileCollection );
         } )
         .catch( ( errorReason ) =>
         {
