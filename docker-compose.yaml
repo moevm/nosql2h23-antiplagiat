@@ -7,12 +7,15 @@ services:
       context: .
       args:
         ANTIPLAGIAT_PORT: 8088
+        ANTIPLAGIAT_DIR: /opt/antiplagiat_backend
     depends_on:
       - db
     environment:
       - ANTIPLAGIAT_DB_HOST=db:27017/
       - ANTIPLAGIAT_PORT=8088
       - ANTIPLAGIAT_DB_NAME=antiplagiat
+      - ANTIPLAGIAT_DIR=/opt/antiplagiat_backend
+      - ANTIPLAGIAT_REPOS_DIR=/opt/antiplagiat_backend/repos
     command: backend
     ports:
       - "8088:8088"

@@ -1,12 +1,14 @@
 import express from "express";
-const app = express();
 import { router } from "./router.js";
+import * as Db from "./db.js";
+
+const app = express();
 
 app.use( "/", router );
 app.listen( process.env.ANTIPLAGIAT_PORT );
 
 process.on( "SIGINT", async() => {
-    await mongoСlient.close();
+    await Db.mongoClient.close();
     console.log( "\nServer was stopped" );
     process.exit();
 } );

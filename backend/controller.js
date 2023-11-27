@@ -1,4 +1,5 @@
 import * as Db from "./db.js";
+import * as GitFetch from "./git_fetch.js";
 
 class Controller
 {
@@ -24,6 +25,20 @@ class Controller
     async GetAllChecks()
     {
         return await Db.checkCollection.FindAll();
+    }
+
+
+    AddRepo( url )
+    {
+        return GitFetch.FetchRepoByUrl( url, Db.repoCollection,
+            Db.commitCollection, Db.fileCollection );
+    }
+
+
+    UpdateRepo( name )
+    {
+        return GitFetch.FetchRepoByName( name, Db.repoCollection,
+            Db.commitCollection, Db.fileCollection );
     }
 
 };
