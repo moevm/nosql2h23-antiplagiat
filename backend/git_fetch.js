@@ -1,3 +1,5 @@
+import { readdir } from "node:fs/promises";
+import { join } from "node:path";
 import NodeGit from "nodegit";
 
 
@@ -26,18 +28,55 @@ async function GetBranches( repo )
 }
 
 
+async function GetRepoFiles( name )
+{
+    const repoPath = process.env.ANTIPLAGIAT_REPOS_DIR + "/" + name + "/";
+    const walk = async ( dirPath ) => Promise.all(
+        await readdir( dirPath, { withFileTypes: true } )
+        .then( ( entries ) => entries.map( ( entry ) =>
+        {
+            const childPath = join( dirPath, entry.name );
+            if ( entry.isDirectory() && entry.name == ".git" )
+            {
+                return [];
+            }
+            return entry.isDirectory() ? walk( childPath ) : childPath.substring( repoPath.length );
+        } ) )
+    );
+    const filesTree = await walk( repoPath );
+    return filesTree.flat( Number.POSITIVE_INFINITY );
+}
+
+
+async function GetFileLatestCommit( repo, commitHash, filename )
+{
+    const revWalk = await repo.createRevWalk();
+    revWalk.push( commitHash );
+    revWalk.sorting( NodeGit.Revwalk.SORT.TIME );
+
+    const historyEntry = await revWalk.fileHistoryWalk( filename, 1 );
+    return historyEntry.commit;
+}
+
+
 async function FillRepoInfo( name, repo, branches,
     repoCollection, commitCollection, fileCollection )
 {
     for ( const branch of branches )
     {
         await repo.checkoutBranch( branch );
-        const commit = await repo.getHeadCommit();
+        const headCommit = await repo.getHeadCommit();
+        const filenames = await GetRepoFiles( name );
+        for ( const filename of filenames )
+        {
+            const commit = await GetFileLatestCommit( repo, headCommit.sha(), filename );
+            console.log( "file:", filename );
 
-        // todo: считывание файлов с ветки, заполнение базы
-        // timeMs() returns unix timestamp
-        console.log("branch:", branch, "\ncommit:", commit.sha(),
-            "\nauthor:", commit.author().name(), "\ntime:", commit.timeMs());
+            // todo: считывание файлов с ветки, заполнение базы
+            // timeMs() returns unix timestamp
+            console.log("branch:", branch, "\ncommit:", commit.sha(),
+                "\nauthor:", commit.author().name(), "\ntime:", commit.timeMs());
+        }
     }
 }
 
