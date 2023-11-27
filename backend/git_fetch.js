@@ -50,12 +50,26 @@ async function GetRepoFiles( name )
 
 async function GetFileLatestCommit( repo, commitHash, filename )
 {
+    const blockSize = 100;
     const revWalk = await repo.createRevWalk();
     revWalk.push( commitHash );
     revWalk.sorting( NodeGit.Revwalk.SORT.TIME );
 
-    const historyEntry = await revWalk.fileHistoryWalk( filename, 1 );
-    return historyEntry.commit;
+    const findCommits = async ( walker ) =>
+    {
+        const historyEntries = await walker.fileHistoryWalk( filename, blockSize );
+        if ( historyEntries.length == 0 )
+        {
+            if ( historyEntries.reachedEndOfHistory )
+            {
+                throw new Error( "No commits found for file " + filename );
+            }
+            return await findCommits( walker );
+        }
+        return historyEntries[ 0 ].commit;
+    };
+
+    return await findCommits( revWalk );
 }
 
 
@@ -73,7 +87,7 @@ async function FillRepoInfo( name, repo, branches,
             console.log( "file:", filename );
 
             // todo: считывание файлов с ветки, заполнение базы
-            // timeMs() returns unix timestamp
+            // timeMs() returns unix timestamp * 1000
             console.log("branch:", branch, "\ncommit:", commit.sha(),
                 "\nauthor:", commit.author().name(), "\ntime:", commit.timeMs());
         }
