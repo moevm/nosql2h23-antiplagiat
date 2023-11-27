@@ -22,7 +22,7 @@ async function GetBranches( repo )
         name.startsWith( "refs/heads/" )
         || name.startsWith( "refs/remotes/" )
     );
-    return { "repo": repo, "branches": branches };
+    return { repo, branches };
 }
 
 
