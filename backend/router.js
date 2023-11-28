@@ -24,4 +24,26 @@ router.get( "/checks", async ( req, res ) => {
     res.send( await controller.GetAllChecks() );
 } );
 
+
+router.post( "/repo/add", ( req, res ) => {
+    controller.AddRepo( req.url );
+    res.status( 204 ).end();
+} );
+
+
+router.post( "/repo/update", ( req, res ) => {
+    controller.UpdateRepo( req.name );
+    res.status( 204 ).end();
+} );
+
+
+router.get( "/repo/all", async ( req, res ) => {
+    res.send( await controller.GetAllReposBranches() );
+} );
+
+
+router.get( "/repo/:repoName/:branchName", async ( req, res ) => {
+    res.send( await controller.GetBranchFiles( req.params.repoName, req.params.branchName ) );
+} );
+
 export { router };
