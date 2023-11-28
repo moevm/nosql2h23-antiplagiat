@@ -1,0 +1,1 @@
+mongosh --port 27077 <db_test_commands.txt
