@@ -17,6 +17,20 @@ async function FetchRepo( repo )
 }
 
 
+async function GetRepoUrl( repo )
+{
+    let url = "";
+    repo.config().then( config =>
+    {
+        config.getStringBuf( "remote.origin.url" ).then( buf =>
+        {
+            url = buf;
+        } )
+    } );
+    return url;
+}
+
+
 async function GetBranches( repo )
 {
     const refNames = await repo.getReferenceNames( NodeGit.Reference.TYPE.ALL );
@@ -76,22 +90,44 @@ async function GetFileLatestCommit( repo, commitHash, filename )
 async function FillRepoInfo( name, repo, branches,
     repoCollection, commitCollection, fileCollection )
 {
+    let repoDbEntry = { name };
+    repoDbEntry.link = GetRepoUrl( repo );
     for ( const branch of branches )
     {
         await repo.checkoutBranch( branch );
+        let commits = new Set();
+        let commitInfos = {};
+
         const headCommit = await repo.getHeadCommit();
         const filenames = await GetRepoFiles( name );
         for ( const filename of filenames )
         {
             const commit = await GetFileLatestCommit( repo, headCommit.sha(), filename );
-            console.log( "file:", filename );
+            const hash = commit.sha();
+            if ( !commits.has( hash ) )
+            {
+                commits.add( hash );
+                commitInfos[ hash ] = {
+                    "_id": hash,
+                    "author": commit.author().name(),
+                    "date": Math.floor( commit.timeMs() / 1000 ),
+                    "files": [ filename ]
+                };
+            }
+            else
+            {
+                commitInfos[ hash ].files.push( filename );
+            }
 
             // todo: считывание файлов с ветки, заполнение базы
             // timeMs() returns unix timestamp * 1000
+            console.log( "file:", filename );
             console.log("branch:", branch, "\ncommit:", commit.sha(),
                 "\nauthor:", commit.author().name(), "\ntime:", commit.timeMs());
         }
+        repoDbEntry.branch.push( { "name": branch, "commits": Array.from( commits ) } );
     }
+    repoCollection.UpdateOne( repoDbEntry );
 }
 
 
