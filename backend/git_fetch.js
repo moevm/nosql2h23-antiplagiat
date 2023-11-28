@@ -1,6 +1,13 @@
+import { readFileSync } from "node:fs";
 import { readdir } from "node:fs/promises";
 import { join } from "node:path";
 import NodeGit from "nodegit";
+
+
+function PreprocessFile( fileContent )
+{
+    return [];
+}
 
 
 function ProcessGitError( errorReason )
@@ -87,23 +94,34 @@ async function GetFileLatestCommit( repo, commitHash, filename )
 }
 
 
+async function InsertCommits( commitInfos, fileInsertResult, commitCollection )
+{
+
+}
+
+
 async function FillRepoInfo( name, repo, branches,
     repoCollection, commitCollection, fileCollection )
 {
     let repoDbEntry = { name };
+    let commits = new Set();
+    let commitInfos = {};
+    let fileInfos = {};
+    let fileDbEntries = [];
     repoDbEntry.link = GetRepoUrl( repo );
+    repoDbEntry.branches = [];
+
     for ( const branch of branches )
     {
         await repo.checkoutBranch( branch );
-        let commits = new Set();
-        let commitInfos = {};
-
         const headCommit = await repo.getHeadCommit();
         const filenames = await GetRepoFiles( name );
+    
         for ( const filename of filenames )
         {
             const commit = await GetFileLatestCommit( repo, headCommit.sha(), filename );
             const hash = commit.sha();
+            const fileContent = readFileSync( filename ).toString();
             if ( !commits.has( hash ) )
             {
                 commits.add( hash );
@@ -118,16 +136,23 @@ async function FillRepoInfo( name, repo, branches,
             {
                 commitInfos[ hash ].files.push( filename );
             }
-
-            // todo: считывание файлов с ветки, заполнение базы
-            // timeMs() returns unix timestamp * 1000
-            console.log( "file:", filename );
-            console.log("branch:", branch, "\ncommit:", commit.sha(),
-                "\nauthor:", commit.author().name(), "\ntime:", commit.timeMs());
+            if ( !fileInfos[ filename ] || !fileInfos[ filename ].find( c => c == hash ) )
+            {
+                fileInfos[ filename ] = [ hash ];
+                fileDbEntries.push( {
+                    "name": filename,
+                    "text": fileContent,
+                    "commit": hash,
+                    "data": PreprocessFile( fileContent ),
+                    "checks": []
+                } );
+            }
         }
-        repoDbEntry.branch.push( { "name": branch, "commits": Array.from( commits ) } );
+        repoDbEntry.branches.push( { "name": branch, "commits": Array.from( commits ) } );
     }
-    repoCollection.UpdateOne( repoDbEntry );
+    await repoCollection.UpdateOne( repoDbEntry );
+    const fileInsertResult = await fileCollection.UpdateMany( fileDbEntries );
+    await InsertCommits( commitInfos, fileInsertResult, commitCollection );
 }
 
 
