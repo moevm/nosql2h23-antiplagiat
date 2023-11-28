@@ -1,17 +1,19 @@
 import { ObjectId } from "mongodb";
+import { BaseCollection } from "./base_collection.js";
 
-class RepoCollection
+class RepoCollection extends BaseCollection
 {
+
     constructor( db )
     {
-        this.collection = db.collection( "repo" );
+        super( db, "repo" );
     }
 
-    async FindAll()
+    async FindOne( name )
     {
-        const records = await this.collection.find( {} ).toArray();
-        return records;
+        return await this.collection.findOne( { name: name } );
     }
+
 };
 
 export { RepoCollection };

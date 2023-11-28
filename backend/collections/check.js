@@ -1,17 +1,14 @@
 import { ObjectId } from "mongodb";
+import { BaseCollection } from "./base_collection.js";
 
-class CheckCollection
+class CheckCollection extends BaseCollection
 {
+
     constructor( db )
     {
-        this.collection = db.collection( "check" );
+        super( db, "check" );
     }
 
-    async FindAll()
-    {
-        const records = await this.collection.find( {} ).toArray();
-        return records;
-    }
 };
 
 export { CheckCollection };
