@@ -26,14 +26,8 @@ async function FetchRepo( repo )
 
 async function GetRepoUrl( repo )
 {
-    let url = "";
-    repo.config().then( config =>
-    {
-        config.getStringBuf( "remote.origin.url" ).then( buf =>
-        {
-            url = buf;
-        } )
-    } );
+    const conf = await repo.config();
+    const url = await conf.getStringBuf( "remote.origin.url" );
     return url;
 }
 
@@ -96,7 +90,7 @@ async function GetFileLatestCommit( repo, commitHash, filename )
 
 async function InsertCommits( commitInfos, fileDbEntries, fileInsertResult, commitCollection )
 {
-    const upserted = fileInsertResult.upserted;
+    const upserted = fileInsertResult.upsertedIds;
     const commits = Object.values( commitInfos );
     for ( const commit of commits )
     {
@@ -104,6 +98,10 @@ async function InsertCommits( commitInfos, fileDbEntries, fileInsertResult, comm
         {
             const index = fileDbEntries.findIndex(
                 entry => entry.name == commit.files[ i ] && entry.commit == commit._id );
+            if ( index == -1 )
+            {
+                continue;
+            }
             commit.files[ i ] = upserted[ index ];
         }
     }
@@ -119,7 +117,7 @@ async function FillRepoInfo( name, repo, branches,
     let commitInfos = {};
     let fileInfos = {};
     let fileDbEntries = [];
-    repoDbEntry.link = GetRepoUrl( repo );
+    repoDbEntry.link = await GetRepoUrl( repo );
     repoDbEntry.branches = [];
 
     for ( const branch of branches )
@@ -132,7 +130,8 @@ async function FillRepoInfo( name, repo, branches,
         {
             const commit = await GetFileLatestCommit( repo, headCommit.sha(), filename );
             const hash = commit.sha();
-            const fileContent = readFileSync( filename ).toString();
+            const fileContent = readFileSync( process.env.ANTIPLAGIAT_REPOS_DIR + "/"
+                + name + "/" + filename ).toString();
             if ( !commits.has( hash ) )
             {
                 commits.add( hash );
@@ -163,7 +162,10 @@ async function FillRepoInfo( name, repo, branches,
     }
     await repoCollection.UpdateOne( repoDbEntry );
     const fileInsertResult = await fileCollection.BulkUpdate( fileDbEntries );
-    await InsertCommits( commitInfos, fileDbEntries, fileInsertResult, commitCollection );
+    if ( fileInsertResult.upsertedCount > 0 )
+    {
+        await InsertCommits( commitInfos, fileDbEntries, fileInsertResult, commitCollection );
+    }
 }
 
 

@@ -24,7 +24,7 @@ class FileCollection extends BaseCollection
             bulk.push( {
                 updateOne: {
                     filter: { name: file.name, commit: file.commit },
-                    update: file,
+                    update: { $set: file },
                     upsert: true
                 }
             } );

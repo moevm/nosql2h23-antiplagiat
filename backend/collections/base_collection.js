@@ -24,7 +24,7 @@ class BaseCollection
     {
         try
         {
-            const insertResult = await this.collection.insertMany( records, { ordered: true } );
+            const insertResult = await this.collection.insertMany( records, { ordered: false } );
             return { ids: insertResult.insertedIds, insertResult };
         }
         catch ( e )

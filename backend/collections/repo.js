@@ -19,14 +19,14 @@ class RepoCollection extends BaseCollection
     async UpdateOne( repo )
     {
         const oldRepo = await this.FindOne( repo.name );
-        if ( Object.values( oldRepo ).length === 0 )
+        if ( !oldRepo )
         {
             // нет такого репозитория - добавить в базу
             return await this.collection.insertOne( repo );
         }
         oldRepo.link = repo.link;
         this.#MergeRepoInfo( oldRepo, repo );
-        return await this.collection.updateOne( { name: repo.name }, oldRepo );
+        return await this.collection.updateOne( { name: repo.name }, { $set: oldRepo } );
     }
 
 
