@@ -72,7 +72,7 @@ class Controller
         }
 
         const files = [];
-        branch.commits.sort( ( a, b ) => b.date - a.date );
+        branch.commits.reverse();
         for ( const commitHash of branch.commits )
         {
             const commit = await Db.commitCollection.FindByHash( commitHash );

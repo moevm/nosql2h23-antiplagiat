@@ -24,6 +24,22 @@ db.file.insertMany( [
         "commit": "503dcc1e48e87239b67bc564e3b4a385026c4212",
         "data": [],
         "checks": []
+    },
+    {
+        "_id": "4",
+        "name": "wello_horld/main.js",
+        "text": "some text",
+        "commit": "623dcc1e48e87239b67bc564e3b4a385026c4212",
+        "data": [],
+        "checks": []
+    },
+    {
+        "_id": "5",
+        "name": "wello_horld/main.js",
+        "text": "some text",
+        "commit": "623dcc1e48e87239b67bc564e3b4a385026c4213",
+        "data": [],
+        "checks": []
     }
 ] )
 
@@ -43,8 +59,25 @@ db.commit.insertMany( [
         "files": [
             "3"
         ]
+    },
+    {
+        "_id": "623dcc1e48e87239b67bc564e3b4a385026c4212",
+        "author": "ne HypeR (nehyperru1lvl@gmail.com)",
+        "date": 1599286754,
+        "files": [
+            "4"
+        ]
+    },
+    {
+        "_id": "623dcc1e48e87239b67bc564e3b4a385026c4213",
+        "author": "ne HypeR (nehyperru1lvl@gmail.com)",
+        "date": 1599286755,
+        "files": [
+            "5"
+        ]
     }
 ] )
+
 
 db.repo.insertOne( {
     "link": "https://github.com/moevm/nosql2h23-antiplagiat",
@@ -59,6 +92,20 @@ db.repo.insertOne( {
         }
     ]
 } )
+db.repo.insertOne( {
+    "link": "https://github.com/moevm/nosql2h23-plagiat",
+    "name": "plagiat",
+    "branches": [
+        {
+            "name": "master",
+            "commits": [
+                "623dcc1e48e87239b67bc564e3b4a385026c4212",
+                "623dcc1e48e87239b67bc564e3b4a385026c4213"
+            ]
+        }
+    ]
+} )
+
 
 db.check.insertOne( {
     "_id": "1",
@@ -90,7 +137,6 @@ db.check.insertOne( {
         }
     ]
 } )
-
 db.check.insertOne( {
     "_id": "2",
     "date": 16992869891,
@@ -110,26 +156,23 @@ db.check.insertOne( {
     ]
 } )
 
+
 db.file.updateOne( { "_id": "1" }, { "$push": { "checks": {
     "_id": "1",
     "result": 64.12
 } } } )
-
 db.file.updateOne( { "_id": "2" }, { "$push": { "checks": {
     "_id": "1",
     "result": 14.19
 } } } )
-
 db.file.updateOne( { "_id": "3" }, { "$push": { "checks": {
     "_id": "1",
     "result": 41.01
 } } } )
-
 db.file.updateOne( { "_id": "1" }, { "$push": { "checks": {
     "_id": "2",
     "result": 69.99
 } } } )
-
 db.file.updateOne( { "_id": "2" }, { "$push": { "checks": {
     "_id": "2",
     "result": 79.99
