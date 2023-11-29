@@ -5,8 +5,12 @@ import * as Db from "./db.js";
 
 const app = express();
 
+app.use( cors( {
+    credentials: true,
+    origin: "http://localhost:8080",
+    methods: [ 'GET', 'POST', 'OPTIONS' ]
+} ) );
 app.use( "/", router );
-app.use( cors() );
 app.listen( process.env.ANTIPLAGIAT_PORT );
 
 process.on( "SIGINT", async() => {
