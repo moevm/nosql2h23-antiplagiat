@@ -94,9 +94,20 @@ async function GetFileLatestCommit( repo, commitHash, filename )
 }
 
 
-async function InsertCommits( commitInfos, fileInsertResult, commitCollection )
+async function InsertCommits( commitInfos, fileDbEntries, fileInsertResult, commitCollection )
 {
-
+    const upserted = fileInsertResult.upserted;
+    const commits = Object.values( commitInfos );
+    for ( const commit of commits )
+    {
+        for ( let i = 0; i < commit.files.length; i++ )
+        {
+            const index = fileDbEntries.findIndex(
+                entry => entry.name == commit.files[ i ] && entry.commit == commit._id );
+            commit.files[ i ] = upserted[ index ];
+        }
+    }
+    await commitCollection.InsertMany( commits );
 }
 
 
@@ -151,8 +162,8 @@ async function FillRepoInfo( name, repo, branches,
         repoDbEntry.branches.push( { "name": branch, "commits": Array.from( commits ) } );
     }
     await repoCollection.UpdateOne( repoDbEntry );
-    const fileInsertResult = await fileCollection.UpdateMany( fileDbEntries );
-    await InsertCommits( commitInfos, fileInsertResult, commitCollection );
+    const fileInsertResult = await fileCollection.BulkUpdate( fileDbEntries );
+    await InsertCommits( commitInfos, fileDbEntries, fileInsertResult, commitCollection );
 }
 
 

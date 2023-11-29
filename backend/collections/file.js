@@ -15,6 +15,22 @@ class FileCollection extends BaseCollection
         return await this.collection.findOne( { _id: id } );
     }
 
+
+    async BulkUpdate( files )
+    {
+        let bulk = [];
+        for ( const file of files )
+        {
+            bulk.push( {
+                updateOne: {
+                    filter: { name: file.name, commit: file.commit },
+                    update: file,
+                    upsert: true
+                }
+            } );
+        }
+        return await this.collection.bulkWrite( bulk );
+    }
 };
 
 export { FileCollection };
