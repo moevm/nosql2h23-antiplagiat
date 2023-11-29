@@ -1,17 +1,20 @@
 import { ObjectId } from "mongodb";
+import { BaseCollection } from "./base_collection.js";
 
-class CommitCollection
+class CommitCollection extends BaseCollection
 {
+
     constructor( db )
     {
-        this.collection = db.collection( "commit" );
+        super( db, "commit" );
     }
 
-    async FindAll()
+
+    async FindByHash( hash )
     {
-        const records = await this.collection.find( {} ).toArray();
-        return records;
+        return await this.collection.findOne( { _id: hash } );
     }
+
 };
 
 export { CommitCollection };
