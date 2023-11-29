@@ -47,11 +47,9 @@ class Controller
         const repos = await this.GetAllRepos();
         for ( const repo of repos )
         {
+            const branches = repo.branches;
+            repo.branches = branches.map( branch => branch.name );
             delete repo.link;
-            for ( const branch of repo.branches )
-            {
-                delete branch.commits;
-            }
         }
         return repos;
     }

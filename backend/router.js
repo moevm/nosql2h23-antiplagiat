@@ -42,8 +42,8 @@ router.get( "/repo/all", async ( req, res ) => {
 } );
 
 
-router.get( "/repo/:repoName/:branchName", async ( req, res ) => {
-    res.send( await controller.GetBranchFiles( req.params.repoName, req.params.branchName ) );
+router.get( "/repo/files", async ( req, res ) => {
+    res.send( await controller.GetBranchFiles( req.query.repoName, req.query.branchName ) );
 } );
 
 export { router };
