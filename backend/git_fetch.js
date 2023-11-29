@@ -1,3 +1,4 @@
+import { execSync } from "node:child_process";
 import { readFileSync } from "node:fs";
 import { readdir } from "node:fs/promises";
 import { join } from "node:path";
@@ -68,7 +69,7 @@ async function GetFileLatestCommit( repo, commitHash, filename )
     const blockSize = 100;
     const revWalk = await repo.createRevWalk();
     revWalk.push( commitHash );
-    revWalk.sorting( NodeGit.Revwalk.SORT.TIME );
+    revWalk.sorting( NodeGit.Revwalk.SORT.TIME | NodeGit.Revwalk.SORT.REVERSE );
 
     const findCommits = async ( walker ) =>
     {
@@ -122,7 +123,10 @@ async function FillRepoInfo( name, repo, branches,
 
     for ( const branch of branches )
     {
-        await repo.checkoutBranch( branch );
+        const checkouter = execSync( "cd " + process.env.ANTIPLAGIAT_REPOS_DIR + "/"
+            + name + " && git checkout " + branch );
+        // await repo.checkoutBranch( branch );  // doesn't work
+
         const headCommit = await repo.getHeadCommit();
         const filenames = await GetRepoFiles( name );
     
@@ -142,13 +146,17 @@ async function FillRepoInfo( name, repo, branches,
                     "files": [ filename ]
                 };
             }
-            else
+            else if ( !commitInfos[ hash ].files.find( f => f == filename ) )
             {
                 commitInfos[ hash ].files.push( filename );
             }
-            if ( !fileInfos[ filename ] || !fileInfos[ filename ].find( c => c == hash ) )
+            if ( !fileInfos[ filename ] )
             {
-                fileInfos[ filename ] = [ hash ];
+                fileInfos[ filename ] = [];
+            }
+            if ( !fileInfos[ filename ].find( c => c == hash ) )
+            {
+                fileInfos[ filename ].push( hash );
                 fileDbEntries.push( {
                     "name": filename,
                     "text": fileContent,
