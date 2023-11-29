@@ -1,6 +1,14 @@
+import { execSync } from "node:child_process";
+import { readFileSync } from "node:fs";
 import { readdir } from "node:fs/promises";
 import { join } from "node:path";
 import NodeGit from "nodegit";
+
+
+function PreprocessFile( fileContent )
+{
+    return [];
+}
 
 
 function ProcessGitError( errorReason )
@@ -14,6 +22,14 @@ async function FetchRepo( repo )
     await repo.fetch( "origin" );
     console.info( "Repo " + repo.path() + " has been fetched" );
     return repo;
+}
+
+
+async function GetRepoUrl( repo )
+{
+    const conf = await repo.config();
+    const url = await conf.getStringBuf( "remote.origin.url" );
+    return url;
 }
 
 
@@ -53,7 +69,7 @@ async function GetFileLatestCommit( repo, commitHash, filename )
     const blockSize = 100;
     const revWalk = await repo.createRevWalk();
     revWalk.push( commitHash );
-    revWalk.sorting( NodeGit.Revwalk.SORT.TIME );
+    revWalk.sorting( NodeGit.Revwalk.SORT.TIME | NodeGit.Revwalk.SORT.REVERSE );
 
     const findCommits = async ( walker ) =>
     {
@@ -73,24 +89,90 @@ async function GetFileLatestCommit( repo, commitHash, filename )
 }
 
 
+async function InsertCommits( commitInfos, fileDbEntries, fileInsertResult, commitCollection )
+{
+    const upserted = fileInsertResult.upsertedIds;
+    const commits = Object.values( commitInfos );
+    for ( const commit of commits )
+    {
+        for ( let i = 0; i < commit.files.length; i++ )
+        {
+            const index = fileDbEntries.findIndex(
+                entry => entry.name == commit.files[ i ] && entry.commit == commit._id );
+            if ( index == -1 )
+            {
+                continue;
+            }
+            commit.files[ i ] = upserted[ index ];
+        }
+    }
+    await commitCollection.InsertMany( commits );
+}
+
+
 async function FillRepoInfo( name, repo, branches,
     repoCollection, commitCollection, fileCollection )
 {
+    let repoDbEntry = { name };
+    let commits = new Set();
+    let commitInfos = {};
+    let fileInfos = {};
+    let fileDbEntries = [];
+    repoDbEntry.link = await GetRepoUrl( repo );
+    repoDbEntry.branches = [];
+
     for ( const branch of branches )
     {
-        await repo.checkoutBranch( branch );
+        const checkouter = execSync( "cd " + process.env.ANTIPLAGIAT_REPOS_DIR + "/"
+            + name + " && git checkout " + branch );
+        // await repo.checkoutBranch( branch );  // doesn't work
+
         const headCommit = await repo.getHeadCommit();
         const filenames = await GetRepoFiles( name );
+    
         for ( const filename of filenames )
         {
             const commit = await GetFileLatestCommit( repo, headCommit.sha(), filename );
-            console.log( "file:", filename );
-
-            // todo: считывание файлов с ветки, заполнение базы
-            // timeMs() returns unix timestamp * 1000
-            console.log("branch:", branch, "\ncommit:", commit.sha(),
-                "\nauthor:", commit.author().name(), "\ntime:", commit.timeMs());
+            const hash = commit.sha();
+            const fileContent = readFileSync( process.env.ANTIPLAGIAT_REPOS_DIR + "/"
+                + name + "/" + filename ).toString();
+            if ( !commits.has( hash ) )
+            {
+                commits.add( hash );
+                commitInfos[ hash ] = {
+                    "_id": hash,
+                    "author": commit.author().name(),
+                    "date": Math.floor( commit.timeMs() / 1000 ),
+                    "files": [ filename ]
+                };
+            }
+            else if ( !commitInfos[ hash ].files.find( f => f == filename ) )
+            {
+                commitInfos[ hash ].files.push( filename );
+            }
+            if ( !fileInfos[ filename ] )
+            {
+                fileInfos[ filename ] = [];
+            }
+            if ( !fileInfos[ filename ].find( c => c == hash ) )
+            {
+                fileInfos[ filename ].push( hash );
+                fileDbEntries.push( {
+                    "name": filename,
+                    "text": fileContent,
+                    "commit": hash,
+                    "data": PreprocessFile( fileContent ),
+                    "checks": []
+                } );
+            }
         }
+        repoDbEntry.branches.push( { "name": branch, "commits": Array.from( commits ) } );
+    }
+    await repoCollection.UpdateOne( repoDbEntry );
+    const fileInsertResult = await fileCollection.BulkUpdate( fileDbEntries );
+    if ( fileInsertResult.upsertedCount > 0 )
+    {
+        await InsertCommits( commitInfos, fileDbEntries, fileInsertResult, commitCollection );
     }
 }
 

@@ -10,7 +10,7 @@ class CommitCollection extends BaseCollection
     }
 
 
-    async FindByHash( hash )
+    async FindOne( hash )
     {
         return await this.collection.findOne( { _id: hash } );
     }

@@ -73,7 +73,7 @@ class Controller
         branch.commits.reverse();
         for ( const commitHash of branch.commits )
         {
-            const commit = await Db.commitCollection.FindByHash( commitHash );
+            const commit = await Db.commitCollection.FindOne( commitHash );
             for ( const fileId of commit.files )
             {
                 const file = await Db.fileCollection.FindById( fileId );
