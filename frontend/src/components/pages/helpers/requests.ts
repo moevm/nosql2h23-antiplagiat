@@ -22,6 +22,6 @@ export const fetchReposAll = async () => {
     return adaptReposFromServer(data.data)
 }
 
-export const addRepo = (url: string) => {
-    return axios.post(`http://localhost:8088/repo/add`, null, {params: {url}})
+export const addRepo = (myUrl: string) => {
+    return axios.post(`http://localhost:8088/repo/add`, {myUrl})
 }
