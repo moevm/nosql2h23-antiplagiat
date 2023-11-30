@@ -4,10 +4,10 @@ services:
 
   backend:
     build:
-      context: .
+      context: backend
       args:
         ANTIPLAGIAT_PORT: 8088
-        ANTIPLAGIAT_DIR: /opt/antiplagiat_backend
+        ANTIPLAGIAT_DIR: /opt/antiplagiat/backend
     depends_on:
       - db
     environment:
