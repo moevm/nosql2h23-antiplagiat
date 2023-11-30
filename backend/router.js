@@ -26,7 +26,7 @@ router.get( "/checks", async ( req, res ) => {
 
 
 router.post( "/repo/add", ( req, res ) => {
-    controller.AddRepo( req.url );
+    controller.AddRepo( req.body.myUrl );
     res.status( 204 ).end();
 } );
 
