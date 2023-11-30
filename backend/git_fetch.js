@@ -69,7 +69,7 @@ async function GetFileLatestCommit( repo, commitHash, filename )
     const blockSize = 100;
     const revWalk = await repo.createRevWalk();
     revWalk.push( commitHash );
-    revWalk.sorting( NodeGit.Revwalk.SORT.TIME | NodeGit.Revwalk.SORT.REVERSE );
+    revWalk.sorting( NodeGit.Revwalk.SORT.TIME );
 
     const findCommits = async ( walker ) =>
     {
