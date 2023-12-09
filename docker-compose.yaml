@@ -2,26 +2,45 @@ version: "3"
 
 services:
 
+  frontend:
+    build:
+      context: frontend
+      args:
+        ANTIPLAGIAT_DIR: ${ANTIPLAGIAT_DIR}
+    depends_on:
+      - backend
+    environment:
+      - ANTIPLAGIAT_BACKEND_HOST=backend:${ANTIPLAGIAT_BACKEND_PORT}
+      - ANTIPLAGIAT_FRONTEND_PORT=${ANTIPLAGIAT_FRONTEND_PORT}
+    command: npm run serve
+    ports:
+      - "127.0.0.1:${ANTIPLAGIAT_FRONTEND_PORT}:${ANTIPLAGIAT_FRONTEND_PORT}"
+
   backend:
     build:
       context: backend
       args:
-        ANTIPLAGIAT_PORT: 8088
-        ANTIPLAGIAT_DIR: /opt/antiplagiat/backend
+        ANTIPLAGIAT_DIR: ${ANTIPLAGIAT_DIR}
     depends_on:
       - db
     environment:
-      - ANTIPLAGIAT_DB_HOST=db:27017/
-      - ANTIPLAGIAT_PORT=8088
+      - ANTIPLAGIAT_DB_HOST=db:${ANTIPLAGIAT_DB_PORT}
+      - ANTIPLAGIAT_FRONTEND_HOST=frontend:${ANTIPLAGIAT_FRONTEND_PORT}
+      - ANTIPLAGIAT_BACKEND_PORT=${ANTIPLAGIAT_BACKEND_PORT}
       - ANTIPLAGIAT_DB_NAME=antiplagiat
-      - ANTIPLAGIAT_DIR=/opt/antiplagiat_backend
-      - ANTIPLAGIAT_REPOS_DIR=/opt/antiplagiat_backend/repos
-    command: backend
+      - ANTIPLAGIAT_DIR=${ANTIPLAGIAT_DIR}/backend
+      - ANTIPLAGIAT_REPOS_DIR=${ANTIPLAGIAT_DIR}/backend/repos
+    command: npm run backend
+    expose:
+      - ${ANTIPLAGIAT_BACKEND_PORT}
     ports:
-      - "8088:8088"
+      - "127.0.0.1:${ANTIPLAGIAT_BACKEND_PORT}:${ANTIPLAGIAT_BACKEND_PORT}"
 
   db:
     image: "mongo:7.0.2"
     restart: always
-    ports:
-      - 27077:27017
+    volumes:
+      - database:/data/db
+
+volumes:
+  database:

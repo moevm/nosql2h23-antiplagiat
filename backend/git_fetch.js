@@ -123,8 +123,8 @@ async function FillRepoInfo( name, repo, branches,
 
     for ( const branch of branches )
     {
-        const checkouter = execSync( "cd " + process.env.ANTIPLAGIAT_REPOS_DIR + "/"
-            + name + " && git checkout " + branch );
+        execSync( "cd " + process.env.ANTIPLAGIAT_REPOS_DIR + "/"
+            + name + " && git checkout " + branch + " > /dev/null" );
         // await repo.checkoutBranch( branch );  // doesn't work
 
         const headCommit = await repo.getHeadCommit();

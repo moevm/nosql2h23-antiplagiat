@@ -10,7 +10,7 @@ const adaptReposFromServer = (data: any) => {
 
 export const fetchReposAll = async () => {
     const data = await axios
-        .get(`http://localhost:8088/repo/all`,
+        .get('/backend/repo/all',
             {
                 headers: {
                     'Access-Control-Allow-Origin': '*',
@@ -23,5 +23,5 @@ export const fetchReposAll = async () => {
 }
 
 export const addRepo = (myUrl: string) => {
-    return axios.post(`http://localhost:8088/repo/add`, {myUrl})
+    return axios.post('/backend/repo/add', {myUrl})
 }
