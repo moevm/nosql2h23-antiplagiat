@@ -13,7 +13,7 @@ const adaptReposFromServer = (data: any) => {
 
 export const fetchRepoByName = async (repo: string, branch: string) => {
     const data = await axios
-        .get(`http://localhost:8088/repo/files?repoName=${repo}&branchName=${branch}`,
+        .get(`/backend/repo/files?repoName=${repo}&branchName=${branch}`,
             {
                 headers: {
                     'Access-Control-Allow-Origin': '*',
