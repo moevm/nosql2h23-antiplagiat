@@ -1,14 +1,8 @@
 import { execSync } from "node:child_process";
-import { readFileSync } from "node:fs";
 import { readdir } from "node:fs/promises";
 import { join } from "node:path";
 import NodeGit from "nodegit";
-
-
-function PreprocessFile( fileContent )
-{
-    return [];
-}
+import * as TextProcessor from "./text_processor.js";
 
 
 function ProcessGitError( errorReason )
@@ -36,17 +30,14 @@ async function GetRepoUrl( repo )
 async function GetBranches( repo )
 {
     const refNames = await repo.getReferenceNames( NodeGit.Reference.TYPE.ALL );
-    const branches = refNames.filter( ( name ) =>
-        name.startsWith( "refs/heads/" )
-        || name.startsWith( "refs/remotes/" )
-    );
+    const branches = refNames.filter( ( name ) => name.startsWith( "refs/remotes/" ) );
     return { repo, branches };
 }
 
 
 async function GetRepoFiles( name )
 {
-    const repoPath = process.env.ANTIPLAGIAT_REPOS_DIR + "/" + name + "/";
+    const repoPath = `${process.env.ANTIPLAGIAT_REPOS_DIR}/${name}/`;
     const walk = async ( dirPath ) => Promise.all(
         await readdir( dirPath, { withFileTypes: true } )
         .then( ( entries ) => entries.map( ( entry ) =>
@@ -134,8 +125,7 @@ async function FillRepoInfo( name, repo, branches,
         {
             const commit = await GetFileLatestCommit( repo, headCommit.sha(), filename );
             const hash = commit.sha();
-            const fileContent = readFileSync( process.env.ANTIPLAGIAT_REPOS_DIR + "/"
-                + name + "/" + filename ).toString();
+            const fileContent = TextProcessor.ReadFile( `${process.env.ANTIPLAGIAT_REPOS_DIR}/${name}/${filename}` );
             if ( !commits.has( hash ) )
             {
                 commits.add( hash );
@@ -161,7 +151,7 @@ async function FillRepoInfo( name, repo, branches,
                     "name": filename,
                     "text": fileContent,
                     "commit": hash,
-                    "data": PreprocessFile( fileContent ),
+                    "data": TextProcessor.PreprocessFile( fileContent ),
                     "checks": []
                 } );
             }
