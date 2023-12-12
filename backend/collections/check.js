@@ -9,6 +9,11 @@ class CheckCollection extends BaseCollection
         super( db, "check" );
     }
 
+    async FindOne( id )
+    {
+        return await this.collection.findOne( { "_id": new ObjectId( id ) } );
+    }
+
 };
 
 export { CheckCollection };
