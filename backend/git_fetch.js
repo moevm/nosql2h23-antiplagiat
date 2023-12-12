@@ -151,7 +151,7 @@ async function FillRepoInfo( name, repo, branches,
                     "name": filename,
                     "text": fileContent,
                     "commit": hash,
-                    "data": TextProcessor.PreprocessFile( fileContent ),
+                    "data": TextProcessor.PreprocessFile( fileContent, 3 ),
                     "checks": []
                 } );
             }
