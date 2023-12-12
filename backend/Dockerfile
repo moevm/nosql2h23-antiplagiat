@@ -11,4 +11,7 @@ RUN apt-get -y install git make g++ libkrb5-dev libssl-dev
 RUN npm config set update-notifier false
 RUN npm install --loglevel=error --no-fund --no-audit
 
+# cosmetic
+RUN git config --global advice.detachedHead false
+
 CMD [ "npm", "run", "backend" ]
