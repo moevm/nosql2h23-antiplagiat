@@ -8,15 +8,13 @@ class BaseCollection
 
     async FindAll()
     {
-        const records = await this.collection.find( {} ).toArray();
-        return records;
+        return await this.collection.find().toArray();
     }
 
 
     async InsertOne( record )
     {
-        const identifier = await this.collection.insertOne( record );
-        return identifier;
+        return await this.collection.insertOne( record );
     }
 
 

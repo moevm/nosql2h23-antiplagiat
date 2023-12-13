@@ -14,6 +14,12 @@ class RepoCollection extends BaseCollection
     {
         return await this.collection.findOne( { name } );
     }
+    
+
+    async FindById( id )
+    {
+        return await this.collection.findOne( { "_id": new ObjectId( id ) } );
+    }
 
 
     async UpdateOne( repo )

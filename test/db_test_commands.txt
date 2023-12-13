@@ -178,4 +178,33 @@ db.file.updateOne( { "_id": "2" }, { "$push": { "checks": {
     "result": 79.99
 } } } )
 
+db.check.insertOne( {
+    _id: "1",
+    date: 12134141,
+    pairs: [
+        {
+            'file1': '1',
+            'file2': '2',
+            matches: [
+                {
+                    'matchIndex1': 10,
+                    'matchIndex2': 11,
+                    'matchLength': 12
+                }, { 
+                    'matchIndex1': 20,
+                    'matchIndex2': 21,
+                    'matchLength': 41
+                }
+            ],
+            'result': 56.1
+        } 
+    ] 
+} );
+db.file.updateOne(
+    { _id: '1' },
+    { '$push': { 'checks': { '_id': '1', 'result': 88.8 } } } );
+db.file.updateOne(
+    { _id: '2' },
+    { '$push': { 'checks': { '_id': '1', 'result': 66.6 } } } );
+
 exit
