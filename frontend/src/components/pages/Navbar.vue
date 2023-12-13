@@ -12,10 +12,10 @@
         <b-button class="custom-button mr-2">
           <img src="../../assets/chartIcon.svg"/>
         </b-button>
-        <b-button class="custom-button mr-2">
+        <b-button @click="download" class="custom-button mr-2">
           <img src="../../assets/downloadIcon.svg"/>
         </b-button>
-        <b-button class="custom-button">
+        <b-button @click="exportData" class="custom-button">
           <img src="../../assets/exportIcon.svg"/>
         </b-button>
       </b-button-group>
@@ -25,11 +25,20 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
+import { downloadData, exportData } from '@/components/pages/helpers/requests'
 
 @Component
 export default class Navbar extends Vue {
   private showStatistics() {
     this.$router.push({name: 'statistics'})
+  }
+
+  private download() {
+    // this.downloadData()
+  }
+
+  private exportData() {
+    // this.exportData()
   }
 }
 </script>

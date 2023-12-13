@@ -52,20 +52,10 @@
   <script lang="ts">
   import { Component, Vue } from 'vue-property-decorator'
   import { mapActions, mapGetters, mapMutations } from "vuex";
-  
-  const Mappers = Vue.extend({
-    methods: {
-      ...mapMutations('repo', ['setRepoName', 'setBranchName']),
-      ...mapActions('repo', ['fetchRepo'])
-    },
-    computed: {
-      ...mapGetters('repo', ['repo', 'repoName', 'branchName'])
-    }
-  })
   @Component
-  export default class RepoInfo extends Mappers {
+  export default class RepoInfo extends Vue {
     async created() {
-      await this.fetchRepo()
+      // await this.fetchReposStatistics()
     }
   }
   </script>

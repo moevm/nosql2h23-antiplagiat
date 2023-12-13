@@ -12,6 +12,7 @@ const adaptReposFromServer = (data: any) => {
 }
 
 export const fetchRepoByName = async (repo: string, branch: string) => {
+    if (!repo) return
     const data = await axios
         .get(`/backend/repo/branch?repoId=${repo}&branchName=${branch}`,
             {
