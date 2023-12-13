@@ -10,7 +10,7 @@ const adaptReposFromServer = (data: any) => {
 
 export const fetchReposAll = async () => {
     const data = await axios
-        .get('/backend/repo/all',
+        .get('/backend/repo/list',
             {
                 headers: {
                     'Access-Control-Allow-Origin': '*',

@@ -10,7 +10,7 @@
       <div v-for="repo in repoList" :key="repo._id">
         <span class="title-2 bold">{{ repo.name }}</span>
         <ul>
-          <li class="branch" v-for="branch in repo.branches" :key="branch" @click="openRepo(repo.name, branch)">{{ branch }}</li>
+          <li class="branch" v-for="branch in repo.branches" :key="branch" @click="openRepo(repo._id, branch)">{{ branch }}</li>
         </ul>
       </div>
     </div>
