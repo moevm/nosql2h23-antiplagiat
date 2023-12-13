@@ -203,7 +203,7 @@ function ProcessRepo( name, repoPromise, repoCollection, commitCollection, fileC
 function FetchRepoByUrl( url, repoCollection, commitCollection, fileCollection )
 {
     const name = url.substring( url.lastIndexOf( "/" ) + 1, url.lastIndexOf( ".git" ) );
-    CloneRepo( url );
+    const repoPromise = NodeGit.Clone( url, process.env.ANTIPLAGIAT_REPOS_DIR + "/" + name );
     return ProcessRepo( name, repoPromise, repoCollection, commitCollection, fileCollection );
 }
 
