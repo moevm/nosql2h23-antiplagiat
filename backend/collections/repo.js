@@ -18,7 +18,7 @@ class RepoCollection extends BaseCollection
 
     async FindById( id )
     {
-        return await this.collection.findOne( { "_id": new ObjectId( id ) } );
+        return await this.collection.findOne( { "_id": new ObjectId( String( id ) ) } );
     }
 
 

@@ -11,7 +11,7 @@ class CheckCollection extends BaseCollection
 
     async FindOne( id )
     {
-        return await this.collection.findOne( { "_id": new ObjectId( id ) } );
+        return await this.collection.findOne( { "_id": new ObjectId( String( id ) ) } );
     }
 
 };
