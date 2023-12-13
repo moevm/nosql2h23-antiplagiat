@@ -11,5 +11,5 @@ export const fetchReposStatistics = async () => {
                     'Content-Type': 'application/json'
                 }
             })
-    // return adaptReposFromServer(data.data)
+    return data.data
 }

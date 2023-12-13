@@ -25,3 +25,11 @@ export const fetchReposAll = async () => {
 export const addRepo = (myUrl: string) => {
     return axios.post('/backend/repo/add', {myUrl})
 }
+
+export const downloadData = () => {
+    return axios.get('/backend/repos/download')
+}
+
+export const exportData = () => {
+    return axios.get('/backend/repos/export ')
+}
