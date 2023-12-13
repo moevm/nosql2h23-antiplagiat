@@ -167,6 +167,13 @@ async function FillRepoInfo( name, repo, branches,
 }
 
 
+function CloneRepo( url )
+{
+    const name = url.substring( url.lastIndexOf( "/" ) + 1, url.lastIndexOf( ".git" ) );
+    const repoPromise = NodeGit.Clone( url, process.env.ANTIPLAGIAT_REPOS_DIR + "/" + name );
+}
+
+
 function ProcessRepo( name, repoPromise, repoCollection, commitCollection, fileCollection )
 {
     let result = true;
@@ -196,7 +203,7 @@ function ProcessRepo( name, repoPromise, repoCollection, commitCollection, fileC
 function FetchRepoByUrl( url, repoCollection, commitCollection, fileCollection )
 {
     const name = url.substring( url.lastIndexOf( "/" ) + 1, url.lastIndexOf( ".git" ) );
-    const repoPromise = NodeGit.Clone( url, process.env.ANTIPLAGIAT_REPOS_DIR + "/" + name );
+    CloneRepo( url );
     return ProcessRepo( name, repoPromise, repoCollection, commitCollection, fileCollection );
 }
 
@@ -216,4 +223,4 @@ function FetchRepoByName( name, repoCollection, commitCollection, fileCollection
 }
 
 
-export { FetchRepoByUrl, FetchRepoByName };
+export { FetchRepoByUrl, FetchRepoByName, CloneRepo };
