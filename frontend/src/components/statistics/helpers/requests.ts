@@ -1,19 +1,8 @@
 import axios from "axios";
 
-const adaptReposFromServer = (data: any) => {
-    return data.map((i: any) => ({
-        _id: i._id,
-        name: i.name,
-        text: i.text,
-        commit: i.commit,
-        data: i.data,
-        checks: i.checks
-    }))
-}
-
-export const fetchRepoByName = async (repo: string, branch: string) => {
+export const fetchReposStatistics = async () => {
     const data = await axios
-        .get(`/backend/repo/branch?repoId=${repo}&branchName=${branch}`,
+        .get('/backend/repos/statistics',
             {
                 headers: {
                     'Access-Control-Allow-Origin': '*',
@@ -22,5 +11,5 @@ export const fetchRepoByName = async (repo: string, branch: string) => {
                     'Content-Type': 'application/json'
                 }
             })
-    return adaptReposFromServer(data.data)
+    // return adaptReposFromServer(data.data)
 }

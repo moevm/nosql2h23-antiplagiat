@@ -6,7 +6,7 @@
         <span class="title-2"> им. Марка Марковича </span>
       </div>
       <b-button-group>
-        <b-button class="custom-button mr-2">
+        <b-button @click="showStatistics" class="custom-button mr-2">
           <img src="../../assets/tableIcon.svg"/>
         </b-button>
         <b-button class="custom-button mr-2">
@@ -27,7 +27,11 @@
 import { Component, Vue } from 'vue-property-decorator'
 
 @Component
-export default class Navbar extends Vue {}
+export default class Navbar extends Vue {
+  private showStatistics() {
+    this.$router.push({name: 'statistics'})
+  }
+}
 </script>
 
 <style lang="scss" scoped>
