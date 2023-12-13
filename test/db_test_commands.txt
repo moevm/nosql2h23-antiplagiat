@@ -80,7 +80,7 @@ db.commit.insertMany( [
 
 
 db.repo.insertOne( {
-    "link": "https://github.com/moevm/nosql2h23-antiplagiat",
+    "link": "https://github.com/moevm/nosql2h23-antiplagiat.git",
     "name": "nosql2h23-antiplagiat",
     "branches": [
         {
@@ -93,7 +93,7 @@ db.repo.insertOne( {
     ]
 } )
 db.repo.insertOne( {
-    "link": "https://github.com/moevm/nosql2h23-plagiat",
+    "link": "https://github.com/moevm/nosql2h23-plagiat.git",
     "name": "plagiat",
     "branches": [
         {

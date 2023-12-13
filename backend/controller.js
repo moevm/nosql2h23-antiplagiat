@@ -254,14 +254,18 @@ class Controller
 
     async PutAllData( data )
     {
-        Db.repoCollection.InsertMany( data[ "repo" ] );
-        Db.commitCollection.InsertMany( data[ "commit" ] );
-        Db.fileCollection.InsertMany( data[ "file" ] );
-        Db.checkCollection.InsertMany( data[ "check" ] );
+        Db.repoCollection.NormalizeIds( data[ "repo" ] );
+        Db.repoCollection.NormalizeIds( data[ "file" ] );
+        Db.repoCollection.NormalizeIds( data[ "check" ] );
+
+        await Db.repoCollection.InsertMany( data[ "repo" ] );
+        await Db.commitCollection.InsertMany( data[ "commit" ] );
+        await Db.fileCollection.InsertMany( data[ "file" ] );
+        await Db.checkCollection.InsertMany( data[ "check" ] );
 
         for ( const repo of data[ "repo" ] )
         {
-            GitFetch.CloneRepo( repo.link );
+            GitFetch.CloneRepo( repo.link ).catch( e => console.error( e ) );
         }
     }
 
