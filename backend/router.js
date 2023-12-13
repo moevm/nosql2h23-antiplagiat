@@ -166,6 +166,7 @@ router.get( "/repo/statistics", async ( req, res ) => {
 router.get( "/repo/file/:fileId", async ( req, res ) => {
     try
     {
+        console.log( req.params.fileId, req.params.fileId.length );
         res.send( await controller.GetChecks( req.params.fileId ) );
     }
     catch ( e )
