@@ -242,6 +242,29 @@ class Controller
         return info;
     }
 
+    async GetAllData()
+    {
+        return {
+            "repo": await Db.repoCollection.FindAll(),
+            "commit": await Db.commitCollection.FindAll(),
+            "file": await Db.fileCollection.FindAll(),
+            "check": await Db.checkCollection.FindAll()
+        };
+    }
+
+    async PutAllData( data )
+    {
+        Db.repoCollection.InsertMany( data[ "repo" ] );
+        Db.commitCollection.InsertMany( data[ "commit" ] );
+        Db.fileCollection.InsertMany( data[ "file" ] );
+        Db.checkCollection.InsertMany( data[ "check" ] );
+
+        for ( const repo of data[ "repo" ] )
+        {
+            GitFetch.CloneRepo( repo.link );
+        }
+    }
+
 };
 
 
