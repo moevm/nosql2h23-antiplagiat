@@ -1,6 +1,6 @@
-import e, { Router, json } from "express";
+import { Router, json } from "express";
 import { Controller } from "./controller.js";
-import { readFileSync, writeFileSync } from "node:fs";
+import { readFileSync } from "node:fs";
 import multer from "multer";
 
 const router = Router();
