@@ -20,11 +20,11 @@ class BaseCollection
     }
 
 
-    async InsertMany( records )
+    async InsertMany( records, ordered = false )
     {
         try
         {
-            const insertResult = await this.collection.insertMany( records, { ordered: false } );
+            const insertResult = await this.collection.insertMany( records, { ordered } );
             return { ids: insertResult.insertedIds, insertResult };
         }
         catch ( e )
