@@ -1,6 +1,6 @@
 import { Router, json } from "express";
 import { Controller } from "./controller.js";
-import { readFileSync, writeFileSync } from "node:fs";
+import { readFileSync } from "node:fs";
 import multer from "multer";
 
 const router = Router();
@@ -111,21 +111,17 @@ router.get( "/repo/branch", async ( req, res ) => {
 } );
 
 
-/// @note Заглушка
 router.post( "/repo/:repoId/check", async ( req, res ) => {
-    try
+    const repoId = req.params.repoId;
+    const docTypes = req.body.docTypes.split( "," );
+    const compareWith = req.body.compareWith;
+    const filesToCheck = req.body.filesToCheck;
+    if ( !await controller.LaunchCheck( repoId, filesToCheck, docTypes, compareWith ) )
     {
-        const repoId = req.params.repoId;
-        const docTypes = req.body.docTypes.split( "," );
-        const compareWith = req.body.compareWith;
-        const filesToCheck = req.body.filesToCheck;
-        res.status( 204 ).end();
-    }
-    catch ( e )
-    {
-        console.error( e );
         res.status( 500 ).end();
+        return;
     }
+    res.status( 204 ).end();
 } );
 
 

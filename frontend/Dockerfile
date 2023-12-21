@@ -7,6 +7,5 @@ COPY . .
 
 RUN npm config set update-notifier false
 RUN npm install --loglevel=error --no-fund --no-audit
-RUN npm run build
 
 CMD [ "npm", "run", "serve" ]

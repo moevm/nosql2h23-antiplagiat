@@ -1,5 +1,7 @@
+import { ObjectId } from "mongodb";
 import * as Db from "./db.js";
 import * as GitFetch from "./git_fetch.js";
+import { CheckFiles } from "./text_processor.js";
 
 class Controller
 {
@@ -52,6 +54,61 @@ class Controller
             delete repo.link;
         }
         return repos;
+    }
+
+
+    async LaunchCheck( repoId, filesToCheck, docTypes, compareWith )
+    {
+        try
+        {
+            let checks = [];
+            let checksToFilesMap = {}; // не массив, потому что файлы могут быть пропущены
+            const files = await Db.fileCollection.FindManyByIds( filesToCheck, { "text": 0, "commit": 0 } );
+            const filesAgainst = await Db.repoCollection.FindFilesByPattern( docTypes, compareWith );
+            const date = Math.floor( Date.now() / 1000 );
+
+            for ( let i = 0; i < files.length; ++i )
+            {
+                let pairs = [];
+                let sumResults = 0;
+                let fileCheck = {};
+                const file = files[ i ];
+                for ( const fileAgainst of filesAgainst )
+                {
+                    if ( file.name != fileAgainst.name || !fileAgainst.repoId.equals( new ObjectId( repoId ) ) )
+                    {
+                        const pair = CheckFiles( file, fileAgainst );
+                        sumResults += pair.result;
+                        pairs.push( pair );
+                    }
+                }
+                if ( pairs.length > 0 )
+                {
+                    fileCheck[ "result" ] = Math.ceil( sumResults / pairs.length );
+                    checksToFilesMap[ checks.length ] = i;
+                    file.checks.push( fileCheck );
+                    checks.push( { date, pairs } );
+                }
+            }
+            // сохранение в БД
+            const checkInsertResult = await Db.checkCollection.InsertMany( checks, true );
+            if ( Object.keys( checkInsertResult.ids ).length === 0 )
+            {
+                throw checkInsertResult.insertResult;
+            }
+            for ( const i of Object.keys( checkInsertResult.ids ) )
+            {
+                const len = files[ checksToFilesMap[ i ] ].checks.length;
+                files[ checksToFilesMap[ i ] ].checks[ len - 1 ][ "_id" ] = checkInsertResult.ids[ i ];
+            }
+            await Db.fileCollection.BulkUpdateById( files );
+        }
+        catch ( error )
+        {
+            console.error( "Cannot execute check:", error );
+            return false;
+        }
+        return true;
     }
 
 
