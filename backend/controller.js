@@ -276,15 +276,15 @@ class Controller
                     if ( fileId == pair.file1 )
                     {
                         match[ "matchedLines" ].push( {
-                            "initial": file.text.substring( m.matchIndex1, m.matchIndex1 + m.matchLength ),
-                            "outer": other.text.substring( m.matchIndex2, m.matchIndex2 + m.matchLength )
+                            "initial": file.text.substring( m.matchIndex1, m.matchIndex1 + m.matchLength1 ),
+                            "outer": other.text.substring( m.matchIndex2, m.matchIndex2 + m.matchLength2 )
                         } );
                     }
                     else
                     {
                         match[ "matchedLines" ].push( {
-                            "initial": other.text.substring( m.matchIndex1, m.matchIndex1 + m.matchLength ),
-                            "outer": file.text.substring( m.matchIndex2, m.matchIndex2 + m.matchLength )
+                            "initial": other.text.substring( m.matchIndex1, m.matchIndex1 + m.matchLength1 ),
+                            "outer": file.text.substring( m.matchIndex2, m.matchIndex2 + m.matchLength2 )
                         } );
                     }
                 }

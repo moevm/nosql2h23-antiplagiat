@@ -19,7 +19,7 @@ db.file.insertMany( [
     },
     {
         "_id": new ObjectId( "123456789012123456789012" ),
-        "name": "hello_world/client.js",
+        "name": "hello_world/client.ts",
         "text": " Curabitur et tincidunt eros. Vestibulum vel ante augue. Maecenas at sem iaculis velit scelerisque elementum vel vitae ligula. Sed dapibus, est id consequat molestie, velit lorem mollis est, at dignissim massa diam nec sapien. Donec in urna facilisis, iaculis risus vel, fringilla tortor. Quisque et est non turpis tempus egestas condimentum et nibh. Aliquam erat volutpat. Sed ipsum purus, blandit at leo eu, posuere mattis tortor. Sed vitae molestie neque. Integer in erat ex. Aliquam erat volutpat. Praesent hendrerit mattis erat congue convallis. Pellentesque laoreet convallis diam, ut porta ante vulputate vitae. Phasellus tempus aliquam velit, blandit ullamcorper lorem ultrices id. Etiam commodo pretium ligula, ut pretium tellus porttitor vel. In laoreet arcu sed nibh auctor consectetur. ",
         "commit": "503dcc1e48e87239b67bc564e3b4a385026c4212",
         "data": [],
@@ -118,7 +118,8 @@ db.check.insertOne( {
                 {
                     "matchIndex1": 10,
                     "matchIndex2": 41,
-                    "matchLength": 11
+                    "matchLength1": 6,
+                    "matchLength2": 10
                 },
             ],
             "result": 32.74
@@ -130,7 +131,8 @@ db.check.insertOne( {
                 {
                     "matchIndex1": 51,
                     "matchIndex2": 46,
-                    "matchLength": 7
+                    "matchLength1": 7,
+                    "matchLength2": 9
                 }
             ],
             "result": 54.02
@@ -148,7 +150,8 @@ db.check.insertOne( {
                 {
                     "matchIndex1": 1,
                     "matchIndex2": 1,
-                    "matchLength": 1
+                    "matchLength1": 3,
+                    "matchLength2": 3
                 },
             ],
             "result": 99.99
@@ -189,11 +192,13 @@ db.check.insertOne( {
                 {
                     'matchIndex1': 10,
                     'matchIndex2': 11,
-                    'matchLength': 12
+                    'matchLength1': 12,
+                    'matchLength2': 13
                 }, { 
                     'matchIndex1': 20,
-                    'matchIndex2': 21,
-                    'matchLength': 41
+                    'matchIndex2': 27,
+                    'matchLength1': 41,
+                    'matchLength2': 50
                 }
             ],
             'result': 56.1

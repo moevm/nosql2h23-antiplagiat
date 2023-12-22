@@ -112,16 +112,24 @@ router.get( "/repo/branch", async ( req, res ) => {
 
 
 router.post( "/repo/:repoId/check", async ( req, res ) => {
-    const repoId = req.params.repoId;
-    const docTypes = req.body.docTypes.split( "," );
-    const compareWith = req.body.compareWith;
-    const filesToCheck = req.body.filesToCheck;
-    if ( !await controller.LaunchCheck( repoId, filesToCheck, docTypes, compareWith ) )
+    try
     {
-        res.status( 500 ).end();
-        return;
+        const repoId = req.params.repoId;
+        const docTypes = req.body.docTypes?.split( "," ) || [];
+        const compareWith = req.body.compareWith || [];
+        const filesToCheck = req.body.filesToCheck || [];
+        if ( !await controller.LaunchCheck( repoId, filesToCheck, docTypes, compareWith ) )
+        {
+            res.status( 500 ).end();
+            return;
+        }
+        res.status( 204 ).end();
     }
-    res.status( 204 ).end();
+    catch ( e )
+    {
+        console.error( e );
+        res.status( 500 ).end();
+    }
 } );
 
 
@@ -143,8 +151,8 @@ router.get( "/repo/statistics", async ( req, res ) => {
     try
     {
         const reqData = {
-            "repoIds": req.query.repoIds?.split( "," ),
-            "docTypes": req.query.docTypes?.split( "," ),
+            "repoIds": req.query.repoIds?.split( "," ) || [],
+            "docTypes": req.query.docTypes?.split( "," ) || [],
             "dateFrom": req.query.dateFrom,
             "dateTo": req.query.dateTo,
             "statisticsType": req.query.statisticsType
