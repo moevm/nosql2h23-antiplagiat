@@ -34,11 +34,11 @@ export default class Navbar extends Vue {
   }
 
   private download() {
-    // this.downloadData()
+    downloadData()
   }
 
   private exportData() {
-    // this.exportData()
+    exportData()
   }
 }
 </script>

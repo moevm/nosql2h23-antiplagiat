@@ -27,9 +27,9 @@ export const addRepo = (myUrl: string) => {
 }
 
 export const downloadData = () => {
-    return axios.get('/backend/repos/download')
+    return axios.get('/backend/import')
 }
 
 export const exportData = () => {
-    return axios.get('/backend/repos/export ')
+    return axios.get('/backend/export')
 }
