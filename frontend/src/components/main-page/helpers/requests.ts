@@ -14,3 +14,8 @@ export const fetchRepoByName = async (repo: string, branch: string) => {
             })
     return data.data
 }
+
+export const checkFilesInRepo = async (repoId: string, settings: any) => {
+    return await axios.post(`/backend/repo/${repoId}/check`, settings)
+}
+

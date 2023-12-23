@@ -10,7 +10,7 @@
           <img src="../../assets/gearIcon.svg" />
         </b-button>
       </div>
-      <b-button class="custom-button">Проверить</b-button>
+      <b-button class="custom-button" :disabled="checkSettingsEmpty" @click="checkFiles">Проверить</b-button>
     </header>
     <main class="mt-3">
       <table class="table">
@@ -31,6 +31,8 @@
                   type="checkbox"
                   class="form-check-input"
                   id="exampleCheck1"
+                  :value="row.fileId"
+                  @change="addFilesForCheck"
                 />
               </div>
             </th>
@@ -61,10 +63,13 @@ import { mapActions, mapGetters, mapMutations } from "vuex";
 const Mappers = Vue.extend({
   methods: {
     ...mapMutations('repo', ['setRepoName', 'setBranchName']),
-    ...mapActions('repo', ['fetchRepo'])
+    ...mapActions('repo', ['fetchRepo']),
+    ...mapMutations('repoCheck', ['setFilesToCheck']),
+    ...mapActions('repoCheck', ['checkFiles'])
   },
   computed: {
-    ...mapGetters('repo', ['repo', 'repoName', 'branchName'])
+    ...mapGetters('repo', ['repo', 'repoName', 'branchName']),
+    ...mapGetters('repoCheck', ['checkSettingsEmpty'])
   }
 })
 @Component({
@@ -73,6 +78,9 @@ const Mappers = Vue.extend({
   }
 })
 export default class RepoInfo extends Mappers {
+  private addFilesForCheck(event: any) {
+    this.setFilesToCheck(event.target.value)
+  } 
   async created() {
     await this.fetchRepo()
   }
