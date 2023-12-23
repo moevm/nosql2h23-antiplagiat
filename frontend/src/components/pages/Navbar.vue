@@ -1,7 +1,7 @@
 <template>
   <div class="navbar" >
     <div class="d-flex justify-content-between flex-grow-1">
-      <div @click="mainPage">
+      <div @click="showMainPage">
         <span class="title-1">АнтиПлагиат</span>
         <span class="title-2"> им. Марка Марковича </span>
       </div>
@@ -30,7 +30,9 @@ import { downloadData, exportData } from '@/components/pages/helpers/requests'
 @Component
 export default class Navbar extends Vue {
   private showStatistics() {
-    this.$router.push({name: 'statistics'})
+    if (!(this.$router.currentRoute.name == 'statistics')) {
+      this.$router.push({name: 'statistics'})
+    }
   }
 
   private download() {
@@ -41,8 +43,10 @@ export default class Navbar extends Vue {
     exportData()
   }
 
-  private mainPage() {
-    this.$router.push({name: 'aboutRepo'})
+  private showMainPage() {
+    if (!(this.$router.currentRoute.name == 'aboutRepo')) {
+      this.$router.push({name: 'aboutRepo'})
+    }
   }
 }
 </script>
