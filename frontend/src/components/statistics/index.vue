@@ -1,61 +1,109 @@
 <template>
     <div>
       <header class="d-flex justify-content-between">
-        <div class="d-flex">
-          <div class="title-1 title mr-3">Сводная таблица</div>
-          <b-button
-            @click="$bvModal.show('repo-settings')"
-            class="custom-button custom-button-icon"
-          >
-            <img src="../../assets/gearIcon.svg" />
-          </b-button>
-        </div>
-        <b-button class="custom-button">Проверить</b-button>
+        <div class="title-1 title mr-3">Сводная таблица</div>
       </header>
-      <main class="mt-3">
-        <table class="table">
-          <thead class="thead-dark">
-            <tr>
-              <th scope="col"></th>
-              <th scope="col">Название</th>
-              <th scope="col">Статус</th>
-              <th scope="col">% совпадения</th>
-              <th scope="col"></th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="row in repo" :key="row._id">
-              <th scope="row">
-                <div class="form-check">
-                  <input
-                    type="checkbox"
-                    class="form-check-input"
-                    id="exampleCheck1"
-                  />
-                </div>
-              </th>
-              <td>{{ row.name }}</td>
-              <td>{{ row.checks.length ? 'Проверено' : 'Не проверено'}}</td>
-              <td>{{ row.checks.length ? row.checks[row.checks.length - 1].result : '-' }}</td>
-              <td>
-                <b-button class="custom-button custom-button-icon">
-                  <img class="file-icon" src="../../assets/fileIcon.svg" />
-                </b-button>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </main>
+      <b-container fluid>
+
+        <b-col lg="6" class="my-1">
+          <b-form-group
+            label="Filter"
+            label-for="filter-input"
+            label-cols-sm="1"
+            label-align-sm="right"
+            label-size="sm"
+            class="mb-0"
+          >
+            <b-input-group size="sm">
+              <b-form-input
+                id="filter-input"
+                v-model="filter"
+                type="search"
+                placeholder="Type to Search"
+              ></b-form-input>
+
+              <b-input-group-append>
+                <b-button :disabled="!filter" @click="filter = ''">Clear</b-button>
+              </b-input-group-append>
+            </b-input-group>
+          </b-form-group>
+        </b-col>
+        <b-table
+          :items="items"
+          :fields="fields"
+          :filter="filter"
+          :filter-included-fields="filterOn"
+          :sort-by.sync="sortBy"
+          :sort-desc.sync="sortDesc"
+          :sort-direction="sortDirection"
+          stacked="md"
+          show-empty
+          small
+        >
+          <template #cell(fileName)="row">
+            {{ row.item.repoName }}/{{ row.item.branchName }}/{{ row.item.fileName }}
+          </template>
+
+          <template #cell(showInfo)="row">
+            <b-button class="custom-button custom-button-icon" @click="showCheckInfo(row)">
+              <img class="file-icon" src="../../assets/fileIcon.svg" />
+            </b-button>
+          </template>
+        </b-table>
+      </b-container>
     </div>
   </template>
   
-  <script lang="ts">
+<script lang="ts">
   import { Component, Vue } from 'vue-property-decorator'
   import { mapActions, mapGetters, mapMutations } from "vuex";
+  import { fetchReposStatistics } from '@/components/statistics/helpers/requests'
+  import { getFileCheckInfo } from '@/components/main-page/helpers/requests'
+
+
   @Component
-  export default class RepoInfo extends Vue {
+  export default class Statistics extends Vue {
+    public items = []
+    public fields = [
+      { key: 'selection', label: ''},
+      { key: 'fileName', label: 'Название', sortable: true},
+      {
+        key: 'checkStatus',
+        label: 'Статус',
+        formatter: (value: any, key: any, item: any) => {
+          return value ? 'Проверено' : 'Не проверено'
+        },
+        sortable: true,
+        sortByFormatted: true
+      },
+      { key: 'matchPercent', label: '%совпадения', sortable: true },
+      { key: 'showInfo', label: ''}
+    ]
+
+    public sortBy = ''
+    public sortDesc = false
+    public sortDirection = 'asc'
+    public filter = ''
+    public filterOn = []
+
+    private get sortOptions() {
+      return this.fields
+        .filter(f => f.sortable)
+        .map(f => {
+          return { text: f.label, value: f.key }
+        })
+    }
+
+    public async showCheckInfo(rowData: any) {
+      await getFileCheckInfo(rowData.item.fileId)
+    }
+    public info(row: any) {
+      console.log('row in info: ', row)
+    }
+    private statistics: any = []
     async created() {
-      // await this.fetchReposStatistics()
+      this.items = await fetchReposStatistics()
+      console.log('items in stats: ', this.items)
     }
   }
   </script>
