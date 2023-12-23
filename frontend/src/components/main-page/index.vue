@@ -51,7 +51,15 @@
         <b-form-checkbox v-model="row.selection" @change="addFilesForCheck(row)" />
       </template>
       <template #cell(checkStatus)="row">
-        <span v-bind:class="[row.value ? 'checked' : 'unchecked']">{{row.value ? 'Проверено' : 'Не проверено'}}</span>
+        <span v-bind:class="[row.item.checkStatus ? 'greenText' : 'redText']">
+          {{row.item.checkStatus ? 'Проверено' : 'Не проверено'}}
+        </span>
+      </template>
+      <template #cell(matchPercent)="row">
+        <span v-bind:class="[row.item.matchPercent < 25 ? 'redText' :
+        (row.item.matchPercent > 65 ? 'greenText' : 'greyText')]">
+          {{row.item.matchPercent}}
+        </span>
       </template>
       <template #cell(showInfo)="row">
         <b-button class="custom-button custom-button-icon" @click="showCheckInfo(row)">
@@ -71,6 +79,7 @@ import { Component, Vue } from 'vue-property-decorator'
 import SettingsModal from '@/components/main-page/SettingsModal.vue'
 import { mapActions, mapGetters, mapMutations } from "vuex";
 import { getFileCheckInfo } from '@/components/main-page/helpers/requests'
+import {computed} from "vue";
 
 const Mappers = Vue.extend({
   methods: {
@@ -126,11 +135,14 @@ export default class RepoInfo extends Mappers {
 .title {
   color: #000000;
 }
-.checked {
+.greenText {
   color: #00830d;
 }
-.unchecked {
+.redText {
   color: #A10000;
+}
+.greyText {
+  color: #5A5A5A
 }
 .custom-button-icon {
   background: transparent;
