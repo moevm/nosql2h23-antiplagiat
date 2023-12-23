@@ -159,11 +159,11 @@ class Controller
         {
             const isReverse = sortOrder == 'desc' ? -1 : 1;
             files.sort( ( a, b ) => {
-                if ( a[ sortBy ] > b[ sortBy ] )
+                if ( a[ sortBy ] < b[ sortBy ] )
                 {
                     return isReverse * -1;
                 }
-                else if ( a[ sortBy ] < b[ sortBy ] )
+                else if ( a[ sortBy ] > b[ sortBy ] )
                 {
                     return isReverse * 1;
                 }
