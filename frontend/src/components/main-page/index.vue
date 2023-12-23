@@ -24,7 +24,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="row in repo" :key="row._id">
+          <tr v-for="row in repo.files" :key="row._id">
             <th scope="row">
               <div class="form-check">
                 <input
@@ -34,9 +34,9 @@
                 />
               </div>
             </th>
-            <td>{{ row.name }}</td>
-            <td>{{ row.checks.length ? 'Проверено' : 'Не проверено'}}</td>
-            <td>{{ row.checks.length ? row.checks[row.checks.length - 1].result : '-' }}</td>
+            <td>{{ row.fileName }}</td>
+            <td>{{ row.checkStatus ? 'Проверено' : 'Не проверено'}}</td>
+            <td>{{ row.matchPercent }}</td>
             <td>
               <b-button class="custom-button custom-button-icon">
                 <img class="file-icon" src="../../assets/fileIcon.svg" />
@@ -56,7 +56,7 @@
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
 import SettingsModal from '@/components/main-page/SettingsModal.vue'
-import {mapActions, mapGetters, mapMutations} from "vuex";
+import { mapActions, mapGetters, mapMutations } from "vuex";
 
 const Mappers = Vue.extend({
   methods: {
