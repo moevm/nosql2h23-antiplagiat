@@ -41,7 +41,7 @@
           small
         >
           <template #cell(fileName)="row">
-            <span class="repoName">{{row.item.repoName}}/</span>
+            <span class="repoName">{{ row.item.repoName }}/</span>
             <span class="dirName">{{ row.item.branchName }}/</span>
             <span class="fileName">{{ row.item.fileName }}</span>
           </template>

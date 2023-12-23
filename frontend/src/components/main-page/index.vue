@@ -50,6 +50,9 @@
       <template #cell(selection)="row">
         <b-form-checkbox v-model="row.selection" @change="addFilesForCheck(row)" />
       </template>
+      <template #cell(checkStatus)="row">
+        <span v-bind:class="[row.value ? 'checked' : 'unchecked']">{{row.value ? 'Проверено' : 'Не проверено'}}</span>
+      </template>
       <template #cell(showInfo)="row">
         <b-button class="custom-button custom-button-icon" @click="showCheckInfo(row)">
           <img class="file-icon" src="../../assets/fileIcon.svg" />
@@ -93,9 +96,6 @@ export default class RepoInfo extends Mappers {
     {
       key: 'checkStatus',
       label: 'Статус',
-      formatter: (value: any, key: any, item: any) => {
-        return value ? 'Проверено' : 'Не проверено'
-      },
       sortable: true,
       sortByFormatted: true
     },
@@ -125,6 +125,12 @@ export default class RepoInfo extends Mappers {
 }
 .title {
   color: #000000;
+}
+.checked {
+  color: #00830d;
+}
+.unchecked {
+  color: #A10000;
 }
 .custom-button-icon {
   background: transparent;
