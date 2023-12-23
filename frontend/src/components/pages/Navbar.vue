@@ -1,7 +1,7 @@
 <template>
   <div class="navbar" >
     <div class="d-flex justify-content-between flex-grow-1">
-      <div>
+      <div @click="mainPage">
         <span class="title-1">АнтиПлагиат</span>
         <span class="title-2"> им. Марка Марковича </span>
       </div>
@@ -39,6 +39,10 @@ export default class Navbar extends Vue {
 
   private exportData() {
     exportData()
+  }
+
+  private mainPage() {
+    this.$router.push({name: 'aboutRepo'})
   }
 }
 </script>
