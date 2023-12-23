@@ -29,8 +29,8 @@ export default {
         }
     },
     actions: {
-        async fetchRepo({commit, getters}: {commit: any, getters: any}) {
-            commit("setRepo", await fetchRepoByName(getters.repoId, getters.branchName))
+        async fetchRepo({commit, getters}: {commit: any, getters: any}, payload: any) {
+            commit("setRepo", await fetchRepoByName(getters.repoId, getters.branchName, payload?.sortBy, payload?.sortOrder))
         }
     }
 }
