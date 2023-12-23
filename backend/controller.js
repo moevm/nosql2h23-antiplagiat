@@ -32,11 +32,12 @@ class Controller
 
     AddRepo( url )
     {
-    	if ( url.startsWith( "https://github.com/" ) && url.endsWith( ".git" ) )
-    	{
-   		return GitFetch.FetchRepoByUrl( url, Db.repoCollection,
-   			Db.commitCollection, Db.fileCollection );
-    	}
+        if ( !( url.startsWith( "https://github.com/" ) && url.endsWith( ".git" ) ) )
+        {
+            throw new Error("Некорректный URL репозитория");
+        }
+        return GitFetch.FetchRepoByUrl( url, Db.repoCollection,
+                Db.commitCollection, Db.fileCollection );
     }
 
 
