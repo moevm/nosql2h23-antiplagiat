@@ -115,7 +115,7 @@ router.post( "/repo/:repoId/check", async ( req, res ) => {
     try
     {
         const repoId = req.params.repoId;
-        const docTypes = req.body.docTypes?.split( "," ) || [];
+        const docTypes = req.body.docTypes || [];
         const compareWith = req.body.compareWith || [];
         const filesToCheck = req.body.filesToCheck || [];
         if ( !await controller.LaunchCheck( repoId, filesToCheck, docTypes, compareWith ) )
