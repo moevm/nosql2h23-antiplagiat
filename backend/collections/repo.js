@@ -14,11 +14,74 @@ class RepoCollection extends BaseCollection
     {
         return await this.collection.findOne( { name } );
     }
-    
+
 
     async FindById( id )
     {
         return await this.collection.findOne( { "_id": new ObjectId( String( id ) ) } );
+    }
+
+
+    /**
+    * @detail
+    * Пример docTypes: [ "txt", "cpp", "h" ]
+    * Пример filter:
+    * {
+    *  "repos": [
+    *    {
+    *       "id": "65832a5be26fa156185ce3bd",
+    *       "branches": [ "b1", "b2" ]
+    *    } ]
+    * }
+    */
+    async FindFilesByPattern( docTypes, filter )
+    {
+        let branchFilters = [];
+        for ( const repo of filter.repos )
+        {
+            branchFilters.push( {
+                "_id": new ObjectId( repo.id ),
+                "branches.name": { "$in": repo.branches }
+            } );
+        }
+        const extenstionRegexp = docTypes.length > 0 ? ( "^.*\\.(" + docTypes.join( "|" ) + ")$" ) : "^.*$";
+        return await this.collection.aggregate( [
+            { "$unwind": "$branches" },
+            { "$match": {
+                    "$or": branchFilters
+                }
+            },
+            {
+                "$lookup": {
+                    "from": "commit",
+                    "localField": "branches.commits",
+                    "foreignField": "_id",
+                    "as": "commitInfo"
+                }
+            },
+            { "$unwind": "$commitInfo" },
+            {
+                "$lookup": {
+                    "from": "file",
+                    "localField": "commitInfo._id",
+                    "foreignField": "commit",
+                    "as": "file"
+                }
+            },
+            { "$unwind": "$file" },
+            {
+                "$project": {
+                    "repoId": "$_id",
+                    "_id": "$file._id",
+                    "name": "$file.name",
+                    "data": "$file.data"
+                }
+            },
+            { "$match": {
+                    "name": { "$regex": extenstionRegexp, "$options": "mi" }
+                }
+            }
+        ] ).toArray();
     }
 
 

@@ -151,8 +151,7 @@ async function FillRepoInfo( name, repo, branches,
                     "name": filename,
                     "text": fileContent,
                     "commit": hash,
-                    "data": TextProcessor.PreprocessFile( fileContent, 3 ),
-                    "checks": []
+                    "data": TextProcessor.PreprocessFile( fileContent, TextProcessor.defaultNgramSize )
                 } );
             }
         }
@@ -170,7 +169,7 @@ async function FillRepoInfo( name, repo, branches,
 function CloneRepo( url )
 {
     const name = url.substring( url.lastIndexOf( "/" ) + 1, url.lastIndexOf( ".git" ) );
-    const repoPromise = NodeGit.Clone( url, process.env.ANTIPLAGIAT_REPOS_DIR + "/" + name );
+    return NodeGit.Clone( url, process.env.ANTIPLAGIAT_REPOS_DIR + "/" + name );
 }
 
 

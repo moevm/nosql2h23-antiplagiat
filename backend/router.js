@@ -1,6 +1,6 @@
 import { Router, json } from "express";
 import { Controller } from "./controller.js";
-import { readFileSync, writeFileSync } from "node:fs";
+import { readFileSync } from "node:fs";
 import multer from "multer";
 
 const router = Router();
@@ -111,14 +111,18 @@ router.get( "/repo/branch", async ( req, res ) => {
 } );
 
 
-/// @note Заглушка
 router.post( "/repo/:repoId/check", async ( req, res ) => {
     try
     {
         const repoId = req.params.repoId;
-        const docTypes = req.body.docTypes.split( "," );
-        const compareWith = req.body.compareWith;
-        const filesToCheck = req.body.filesToCheck;
+        const docTypes = req.body.docTypes?.split( "," ) || [];
+        const compareWith = req.body.compareWith || [];
+        const filesToCheck = req.body.filesToCheck || [];
+        if ( !await controller.LaunchCheck( repoId, filesToCheck, docTypes, compareWith ) )
+        {
+            res.status( 500 ).end();
+            return;
+        }
         res.status( 204 ).end();
     }
     catch ( e )
@@ -147,8 +151,8 @@ router.get( "/repo/statistics", async ( req, res ) => {
     try
     {
         const reqData = {
-            "repoIds": req.query.repoIds?.split( "," ),
-            "docTypes": req.query.docTypes?.split( "," ),
+            "repoIds": req.query.repoIds?.split( "," ) || [],
+            "docTypes": req.query.docTypes?.split( "," ) || [],
             "dateFrom": req.query.dateFrom,
             "dateTo": req.query.dateTo,
             "statisticsType": req.query.statisticsType
