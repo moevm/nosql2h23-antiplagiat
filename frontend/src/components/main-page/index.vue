@@ -13,28 +13,28 @@
       <b-button class="custom-button" :disabled="checkSettingsEmpty" @click="checkFiles">Проверить</b-button>
     </header>
     <b-col lg="6" class="my-1">
-        <b-form-group
-          label="Filter"
-          label-for="filter-input"
-          label-cols-sm="1"
-          label-align-sm="right"
-          label-size="sm"
-          class="mb-0"
-        >
-          <b-input-group size="sm">
-            <b-form-input
-              id="filter-input"
-              v-model="filter"
-              type="search"
-              placeholder="Type to Search"
-            ></b-form-input>
+      <b-form-group
+        label="Filter"
+        label-for="filter-input"
+        label-cols-sm="1"
+        label-align-sm="right"
+        label-size="sm"
+        class="mb-0"
+      >
+        <b-input-group size="sm">
+          <b-form-input
+            id="filter-input"
+            v-model="filter"
+            type="search"
+            placeholder="Type to Search"
+          ></b-form-input>
 
-            <b-input-group-append>
-              <b-button :disabled="!filter" @click="filter = ''">Clear</b-button>
-            </b-input-group-append>
-          </b-input-group>
-        </b-form-group>
-      </b-col>
+          <b-input-group-append>
+            <b-button :disabled="!filter" @click="filter = ''">Clear</b-button>
+          </b-input-group-append>
+        </b-input-group>
+      </b-form-group>
+    </b-col>
     <b-table
       :items="repo.files"
       :fields="fields"
@@ -100,20 +100,18 @@ export default class RepoInfo extends Mappers {
       sortByFormatted: true
     },
     { key: 'matchPercent', label: '% совпадения', sortable: true },
-    { key: 'showInfo', label: ''},
+    { key: 'showInfo', label: ''}
   ]
-  private sortBy = ''
-  private sortDesc = false
-  private sortDirection = 'asc'
-  private filter = null
-  private filterOn = []
+  public sortBy = ''
+  public sortDesc = false
+  public sortDirection = 'asc'
+  public filter = ''
+  public filterOn = []
   public addFilesForCheck(rowInfo: any) {
     this.setFilesToCheck(rowInfo.item.fileId)
   }
   public async showCheckInfo(rowData: any) {
     await getFileCheckInfo(rowData.item.fileId)
-    await this.fetchRepo()
-
   }
   async created() {
     await this.fetchRepo()
