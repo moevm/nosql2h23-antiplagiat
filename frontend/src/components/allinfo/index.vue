@@ -5,7 +5,7 @@
       </header>
       <b-container fluid class="row">
         <div class="col-9">
-          <Bar :options="chartOptions" :data="chartData" />
+          <Bar :options="chartOptions" :data="chartData"/>
         </div>
         <div class="col-3">
           <div class="title">Расширение файлов</div>
@@ -97,8 +97,8 @@
       responsive: true
     }
 
-    async updateChartData()
-    {
+    private async updateChartData() {
+      this.repoStats = []
       this.items = await fetchAllInfo( this.selectedDocTypes, this.dateFrom, this.dateTo )
       const reposInfo: any = {}
       let item: any
@@ -128,7 +128,6 @@
         datasets: this.repoStats,
         labels: ['Репозитории']
       }
-      console.log( this.chartData )
     }
 
     async created() {

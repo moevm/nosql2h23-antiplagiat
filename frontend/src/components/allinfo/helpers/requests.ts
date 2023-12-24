@@ -7,8 +7,16 @@ export const adaptStatsForClient = (stats: any) => {
 }
 
 export const fetchAllInfo = async ( docTypes: any[] = [], dateFrom = 0, dateTo = 0 ) => {
-    const docTypesStr = docTypes.join( ',' )
-    const url = `/backend/repo/statistics?docTypes=${docTypesStr}&dateFrom=${dateFrom}&dateTo=${dateTo}`
-    const data = await axios.get( url )
+    const statParams: { [k: string]: any} = {}
+    if (docTypes.length) {
+        statParams.docTypes = docTypes.join( ',' )
+    }
+    if (dateFrom) {
+        statParams.dateFrom = dateFrom
+    }
+    if (dateTo) {
+        statParams.dateTo = dateTo
+    }
+    const data = await axios.get('/backend/repo/statistics', { params: statParams })
     return adaptStatsForClient( data.data )
 }
