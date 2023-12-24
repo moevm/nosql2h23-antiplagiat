@@ -26,6 +26,14 @@ const routes: Array<RouteConfig> = [
         /* webpackChunkName: "statistics" */ '../components/statistics/index.vue'
       ),
   },
+  {
+    path: '/check-info/:id',
+    name: 'checkInfo',
+    component: () =>
+      import(
+        /* webpackChunkName: "checkInfo" */ '../components/checkInfo/index.vue'
+      ),
+  },
 ]
 
 const router = new VueRouter({
