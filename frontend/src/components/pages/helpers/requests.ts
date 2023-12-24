@@ -1,4 +1,5 @@
 import axios from "axios";
+import { saveAs } from "file-saver";
 
 const adaptReposFromServer = (data: any) => {
     return data.map((i: any) => ({
@@ -26,10 +27,22 @@ export const addRepo = (myUrl: string) => {
     return axios.post('/backend/repo/add', {myUrl})
 }
 
-export const downloadData = () => {
+export const downloadData = ( file: any ) => {
+    const formData = new FormData();
+    formData.append( 'data', file );
+    return axios
+        .post( '/backend/import', formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+        })
     return axios.get('/backend/import')
 }
 
 export const exportData = () => {
-    return axios.get('/backend/export')
+    return axios
+        .get( '/backend/export', { responseType: 'blob' } )
+        .then( response => {
+            saveAs( response.data , 'export.json' );
+        } )
 }

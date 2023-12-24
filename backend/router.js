@@ -212,7 +212,7 @@ router.post( "/import", upload.single( 'data' ), async ( req, res ) => {
     try
     {
         const fileData = JSON.parse(
-            readFileSync( req.file ).toString()
+            readFileSync( req.file.path ).toString()
         );
         await controller.PutAllData( fileData )
         res.end();
