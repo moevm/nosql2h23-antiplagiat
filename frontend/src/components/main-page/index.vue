@@ -26,11 +26,11 @@
             id="filter-input"
             v-model="filter"
             type="search"
-            placeholder="Type to Search"
+            placeholder="Введите запрос"
           ></b-form-input>
 
           <b-input-group-append>
-            <b-button :disabled="!filter" @click="filter = ''">Clear</b-button>
+            <b-button :disabled="!filter" @click="filter = ''">Очистить</b-button>
           </b-input-group-append>
         </b-input-group>
       </b-form-group>
