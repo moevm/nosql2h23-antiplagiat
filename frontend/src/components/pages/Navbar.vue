@@ -9,7 +9,7 @@
         <b-button @click="showStatistics" class="custom-button mr-2" v-b-tooltip title="Сводная таблица">
           <img src="../../assets/tableIcon.svg"/>
         </b-button>
-        <b-button class="custom-button mr-2" v-b-tooltip title="Статистика">
+        <b-button @click="showAllinfo" class="custom-button mr-2" v-b-tooltip title="Статистика">
           <img src="../../assets/chartIcon.svg"/>
         </b-button>
         <input id="importFile" type="file" @change="importFile" hidden>
@@ -33,6 +33,12 @@ export default class Navbar extends Vue {
   private showStatistics() {
     if (!(this.$router.currentRoute.name == 'statistics')) {
       this.$router.push({name: 'statistics'})
+    }
+  }
+
+  private showAllinfo() {
+    if (!(this.$router.currentRoute.name == 'allInfo')) {
+      this.$router.push({name: 'allInfo'})
     }
   }
 

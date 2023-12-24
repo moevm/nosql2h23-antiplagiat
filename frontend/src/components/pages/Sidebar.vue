@@ -51,6 +51,9 @@ export default class Sidebar extends Mappers {
     this.setRepoName(repoName)
     this.setBranchName(branchName)
     this.fetchRepo()
+    setTimeout( () => {
+      this.updateRepos()
+    }, 5000 );
   }
 
   private async updateRepos() {
