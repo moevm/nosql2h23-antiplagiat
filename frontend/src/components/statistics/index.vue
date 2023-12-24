@@ -41,7 +41,9 @@
           small
         >
           <template #cell(fileName)="row">
-            {{ row.item.repoName }}/{{ row.item.branchName }}/{{ row.item.fileName }}
+            <span class="repoName">{{ row.item.repoName }}/</span>
+            <span class="dirName">{{ row.item.branchName }}/</span>
+            <span class="fileName">{{ row.item.fileName }}</span>
           </template>
 
           <template #cell(showInfo)="row">
@@ -114,6 +116,15 @@
   }
   .title {
     color: #000000;
+  }
+  .repoName {
+    color: #7375A5;
+  }
+  .dirName {
+    color: #9D9D9D;
+  }
+  .fileName {
+    color: #5A5A5A;
   }
   .custom-button-icon {
     background: transparent;

@@ -32,8 +32,12 @@ class Controller
 
     AddRepo( url )
     {
+        if ( !( url.startsWith( "https://github.com/" ) && url.endsWith( ".git" ) ) )
+        {
+            throw new Error("Некорректный URL репозитория");
+        }
         return GitFetch.FetchRepoByUrl( url, Db.repoCollection,
-            Db.commitCollection, Db.fileCollection );
+                Db.commitCollection, Db.fileCollection );
     }
 
 
@@ -159,11 +163,11 @@ class Controller
         {
             const isReverse = sortOrder == 'desc' ? -1 : 1;
             files.sort( ( a, b ) => {
-                if ( a[ sortBy ] > b[ sortBy ] )
+                if ( a[ sortBy ] < b[ sortBy ] )
                 {
                     return isReverse * -1;
                 }
-                else if ( a[ sortBy ] < b[ sortBy ] )
+                else if ( a[ sortBy ] > b[ sortBy ] )
                 {
                     return isReverse * 1;
                 }

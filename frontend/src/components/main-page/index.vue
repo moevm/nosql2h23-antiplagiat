@@ -26,11 +26,11 @@
             id="filter-input"
             v-model="filter"
             type="search"
-            placeholder="Type to Search"
+            placeholder="Введите запрос"
           ></b-form-input>
 
           <b-input-group-append>
-            <b-button :disabled="!filter" @click="filter = ''">Clear</b-button>
+            <b-button :disabled="!filter" @click="filter = ''">Очистить</b-button>
           </b-input-group-append>
         </b-input-group>
       </b-form-group>
@@ -51,6 +51,17 @@
       <template #cell(selection)="row">
         <b-form-checkbox v-model="row.selection" @change="addFilesForCheck(row)" />
       </template>
+      <template #cell(checkStatus)="row">
+        <span v-bind:class="[row.item.checkStatus ? 'greenText' : 'redText']">
+          {{row.item.checkStatus ? 'Проверено' : 'Не проверено'}}
+        </span>
+      </template>
+      <template #cell(matchPercent)="row">
+        <span v-bind:class="[row.item.matchPercent < 25 ? 'redText' :
+        (row.item.matchPercent > 65 ? 'greenText' : 'greyText')]">
+          {{row.item.matchPercent}}
+        </span>
+      </template>
       <template #cell(showInfo)="row">
         <b-button class="custom-button custom-button-icon" @click="showCheckInfo(row)">
           <img class="file-icon" src="../../assets/fileIcon.svg" />
@@ -69,6 +80,7 @@ import { Component, Vue } from 'vue-property-decorator'
 import SettingsModal from '@/components/main-page/SettingsModal.vue'
 import { mapActions, mapGetters, mapMutations } from "vuex";
 import { getFileCheckInfo } from '@/components/main-page/helpers/requests'
+import {computed} from "vue";
 
 const Mappers = Vue.extend({
   methods: {
@@ -94,9 +106,6 @@ export default class RepoInfo extends Mappers {
     {
       key: 'checkStatus',
       label: 'Статус',
-      formatter: (value: any, key: any, item: any) => {
-        return value ? 'Проверено' : 'Не проверено'
-      },
       sortable: true,
       sortByFormatted: true
     },
@@ -126,6 +135,15 @@ export default class RepoInfo extends Mappers {
 }
 .title {
   color: #000000;
+}
+.greenText {
+  color: #00830d;
+}
+.redText {
+  color: #A10000;
+}
+.greyText {
+  color: #5A5A5A
 }
 .custom-button-icon {
   background: transparent;
