@@ -36,6 +36,7 @@
       </b-form-group>
     </b-col>
     <b-table
+      v-if="repo"
       :items="repo.files"
       :fields="fields"
       :sort-by.sync="sortBy"
