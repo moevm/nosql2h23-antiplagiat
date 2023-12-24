@@ -15,6 +15,17 @@ const routes: Array<RouteConfig> = [
         /* webpackChunkName: "about" */ '../components/main-page/index.vue'
       ),
   },
+  {
+    path: '/statistics',
+    name: 'statistics',
+    // route level code-splitting
+    // this generates a separate chunk (about.[hash].js) for this route
+    // which is lazy-loaded when the route is visited.
+    component: () =>
+      import(
+        /* webpackChunkName: "statistics" */ '../components/statistics/index.vue'
+      ),
+  },
 ]
 
 const router = new VueRouter({

@@ -10,7 +10,7 @@
       <div v-for="repo in repoList" :key="repo._id">
         <span class="title-2 bold">{{ repo.name }}</span>
         <ul>
-          <li class="branch" v-for="branch in repo.branches" :key="branch" @click="openRepo(repo.name, branch)">{{ branch }}</li>
+          <li class="branch" v-for="branch in repo.branches" :key="branch" @click="openRepo(repo._id, branch, repo.name)">{{ branch }}</li>
         </ul>
       </div>
     </div>
@@ -33,7 +33,7 @@ import {mapActions, mapMutations} from "vuex";
 
 const Mappers = Vue.extend({
   methods: {
-    ...mapMutations('repo', ['setRepoName', 'setBranchName']),
+    ...mapMutations('repo', ['setRepoName', 'setBranchName', 'setRepoId']),
     ...mapActions('repo', ['fetchRepo'])
   }
 })
@@ -46,7 +46,8 @@ const Mappers = Vue.extend({
 export default class Sidebar extends Mappers {
   private repoList: Repo[] = []
 
-  private openRepo(repoName: string, branchName: string) {
+  private openRepo(repoId: string, branchName: string, repoName: string) {
+    this.setRepoId(repoId)
     this.setRepoName(repoName)
     this.setBranchName(branchName)
     this.fetchRepo()
