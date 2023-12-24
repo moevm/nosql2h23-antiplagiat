@@ -12,6 +12,7 @@
         <b-button class="custom-button mr-2" v-b-tooltip title="Статистика">
           <img src="../../assets/chartIcon.svg"/>
         </b-button>
+        <input id="importFile" type="file" @change="importFile" hidden>
         <b-button @click="download" class="custom-button mr-2" v-b-tooltip title="Массовый импорт">
           <img src="../../assets/downloadIcon.svg"/>
         </b-button>
@@ -35,8 +36,12 @@ export default class Navbar extends Vue {
     }
   }
 
+  private importFile( event: any ) {
+    downloadData( event.target.files[ 0 ] )
+  }
+
   private download() {
-    downloadData()
+    document.getElementById( 'importFile' )?.click();
   }
 
   private exportData() {
