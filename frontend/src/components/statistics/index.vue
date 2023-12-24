@@ -97,7 +97,7 @@
     }
 
     public async showCheckInfo(rowData: any) {
-      await getFileCheckInfo(rowData.item.fileId)
+      this.$router.push({name: 'checkInfo', params: {id: rowData.item.fileId }})
     }
     public info(row: any) {
       console.log('row in info: ', row)

@@ -36,6 +36,7 @@
       </b-form-group>
     </b-col>
     <b-table
+      v-if="repo"
       :items="repo.files"
       :fields="fields"
       :sort-by.sync="sortBy"
@@ -120,7 +121,7 @@ export default class RepoInfo extends Mappers {
     this.setFilesToCheck(rowInfo.item.fileId)
   }
   public async showCheckInfo(rowData: any) {
-    await getFileCheckInfo(rowData.item.fileId)
+    this.$router.push({name: 'checkInfo', params: {id: rowData.item.fileId }})
   }
   async created() {
     await this.fetchRepo()
