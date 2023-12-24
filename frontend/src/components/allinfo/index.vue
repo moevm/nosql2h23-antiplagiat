@@ -3,9 +3,31 @@
       <header class="d-flex justify-content-between">
         <div class="title-1 title mr-3">Статистика</div>
       </header>
-      <b-container fluid>
-        <div class="w-50">
+      <b-container fluid class="row">
+        <div class="col-9">
           <Bar :options="chartOptions" :data="chartData" />
+        </div>
+        <div class="col-3">
+          <div class="title">Расширение файлов</div>
+          <div v-for="docType in documentTypes" :key="docType.id" class="form-check">
+            <input type="checkbox" class="form-check-input" id="exampleCheck1" :value="docType.type" @change="addDocTypesForCheck" />
+            <label class="form-check-label" for="exampleCheck1">
+              {{ docType.type }}
+            </label>
+          </div>
+          <hr />
+          <div class="form-group">
+            <label class="title" for="dateFrom">
+              Дата от
+            </label>
+            <input id="dateFrom" type="text" class="form-control" @change="dateFromChanged" />
+          </div>
+          <div class="form-group">
+            <label class="title" for="dateTo">
+              Дата до
+            </label>
+            <input id="dateTo" type="text" class="form-control" @change="dateToChanged" />
+          </div>
         </div>
       </b-container>
     </div>
@@ -27,9 +49,9 @@
   })
   export default class AllInfo extends Vue {
     public items = []
-    public repoNames: any[] = []
-    public repoStats: any[] = []
-    public chartColors: string[] = [
+    private repoNames: any[] = []
+    private repoStats: any[] = []
+    private chartColors: string[] = [
       "#590D22",
       "#800F2F",
       "#A4133C",
@@ -41,17 +63,46 @@
       "#FFCCD5",
       "#FFF0F3"
     ]
+    private documentTypes = [
+      {
+        id: 0,
+        type: 'md',
+      },
+      {
+        id: 1,
+        type: 'js',
+      },
+      {
+        id: 2,
+        type: 'h',
+      },
+      {
+        id: 3,
+        type: 'cpp',
+      },
+      {
+        id: 4,
+        type: 'c',
+      },
+      {
+        id: 5,
+        type: 'txt',
+      },
+    ]
+    private selectedDocTypes: string[] = []
+    private dateFrom = 0
+    private dateTo = 0
     public chartData: any = { datasets: [], labels: [] }
     public chartOptions = {
-      
       responsive: true
     }
 
-    async beforeCreate() {
-      this.items = await fetchAllInfo()
+    async updateChartData()
+    {
+      this.items = await fetchAllInfo( this.selectedDocTypes, this.dateFrom, this.dateTo )
       const reposInfo: any = {}
-      let item: any;
-      let repo: string;
+      let item: any
+      let repo: string
       for ( item of this.items )
       {
         const key: string = item.repoName;
@@ -77,6 +128,37 @@
         datasets: this.repoStats,
         labels: ['Репозитории']
       }
+      console.log( this.chartData )
+    }
+
+    async created() {
+      await this.updateChartData();
+    }
+
+    private addDocTypesForCheck( event: any ) {
+      const selected = event.target.value
+      const index = this.selectedDocTypes.indexOf( selected )
+      if ( -1 != index )
+      {
+        this.selectedDocTypes.splice( index, 1 )
+      }
+      else
+      {
+        this.selectedDocTypes.push( selected )
+      }
+      this.updateChartData()
+    }
+
+    private dateFromChanged( event: any ) {
+      this.dateFrom = new Date( event.target.value ).getTime() / 1000
+      console.log( this.dateFrom )
+      this.updateChartData()
+    }
+
+    private dateToChanged( event: any ) {
+      this.dateTo = new Date( event.target.value ).getTime() / 1000
+      console.log( this.dateTo )
+      this.updateChartData()
     }
   }
   </script>
@@ -94,7 +176,7 @@
   .dirName {
     color: #9D9D9D;
   }
-  .fileName {
+  .fileName, .form-check {
     color: #5A5A5A;
   }
   .custom-button-icon {
