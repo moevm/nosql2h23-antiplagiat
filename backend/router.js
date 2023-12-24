@@ -171,7 +171,8 @@ router.get( "/repo/file/:fileId", async ( req, res ) => {
     try
     {
         console.log( req.params.fileId, req.params.fileId.length );
-        res.send( await controller.GetChecks( req.params.fileId ) );
+        const checks = await controller.GetChecks( req.params.fileId );
+        res.json( { repoId: req.query.repoId, branchName: req.query.branchName, ...checks } );
     }
     catch ( e )
     {
