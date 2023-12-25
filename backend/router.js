@@ -4,8 +4,8 @@ import { readFileSync } from "node:fs";
 import multer from "multer";
 
 const router = Router();
-const jsonParser = json();
 const controller = new Controller();
+controller.InitDefaultData();
 
 const storage = multer.diskStorage( {
     destination: function ( req, file, cb ) {

@@ -8,6 +8,12 @@ class BaseCollection
     }
 
 
+    async CountDocuments()
+    {
+        return await this.collection.countDocuments();
+    }
+
+
     async FindAll()
     {
         return await this.collection.find().toArray();

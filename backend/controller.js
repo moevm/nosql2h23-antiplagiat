@@ -2,9 +2,29 @@ import { ObjectId } from "mongodb";
 import * as Db from "./db.js";
 import * as GitFetch from "./git_fetch.js";
 import { CheckFiles } from "./text_processor.js";
+import { readFileSync } from "node:fs";
 
 class Controller
 {
+    async InitDefaultData()
+    {
+        try
+        {
+            const count = await Db.repoCollection.CountDocuments();
+            if ( !count )
+            {
+                const fileData = JSON.parse(
+                    readFileSync( "./initial_data.json" ).toString()
+                );
+                await this.PutAllData( fileData );
+                console.log( "Imported default data" );
+            }
+        }
+        catch( err )
+        {
+            return console.log( err );
+        }
+    }
 
     async GetAllRepos()
     {
